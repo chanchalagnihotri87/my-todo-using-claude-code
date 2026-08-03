@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <ProjectReference Include="..\MyTodo.Application\MyTodo.Application.csproj" />
     <ProjectReference Include="..\MyTodo.Infrastructure\MyTodo.Infrastructure.csproj" />
   </ItemGroup>
 
