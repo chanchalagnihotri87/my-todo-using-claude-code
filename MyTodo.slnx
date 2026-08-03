@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Claude.md" />
+  </Folder>
+  <Project Path="MyTodo.Application/MyTodo.Application.csproj" />
+  <Project Path="MyTodo.Domain/MyTodo.Domain.csproj" />
+  <Project Path="MyTodo.Infrastructure/MyTodo.Infrastructure.csproj" />
+  <Project Path="MyTodo/MyTodo.csproj" />
+</Solution>
