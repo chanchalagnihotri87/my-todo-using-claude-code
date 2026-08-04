@@ -1,6 +1,10 @@
-﻿namespace MyTodo.Domain.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace MyTodo.Domain.Entities
 {
-    public class LifeArea
+    public class Problem
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -8,6 +12,7 @@
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<Problem> Problems { get; set; } = new List<Problem>();
+        public int LifeAreaId { get; set; }
+        public LifeArea LifeArea { get; set; } = null!;
     }
 }

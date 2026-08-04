@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyTodo.Infrastructure.Persistence.DbContext;
 
@@ -11,9 +12,11 @@ using MyTodo.Infrastructure.Persistence.DbContext;
 namespace MyTodo.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MyTodoDbContext))]
-    partial class MyTodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260804171845_Problem_Added")]
+    partial class Problem_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,9 +68,6 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("LifeAreaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -78,25 +78,7 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LifeAreaId");
-
                     b.ToTable("Problems", (string)null);
-                });
-
-            modelBuilder.Entity("MyTodo.Domain.Entities.Problem", b =>
-                {
-                    b.HasOne("MyTodo.Domain.Entities.LifeArea", "LifeArea")
-                        .WithMany("Problems")
-                        .HasForeignKey("LifeAreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LifeArea");
-                });
-
-            modelBuilder.Entity("MyTodo.Domain.Entities.LifeArea", b =>
-                {
-                    b.Navigation("Problems");
                 });
 #pragma warning restore 612, 618
         }

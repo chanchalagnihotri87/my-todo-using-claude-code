@@ -18,3 +18,6 @@
 - New Entity: Always create a corresponding configuration class in `Persistence/Configurations`.
 - Repository classes should implement interfaces defined in the `Application/Interfaces` folder.
 - Define Base repository with common CRUD operations in `Persistence/Repositories/BaseRepository.cs` and inherit from it for specific entity repositories.
+
+## Don'ts
+- Avoid running project after making changes just build if you need to check for compilation errors.

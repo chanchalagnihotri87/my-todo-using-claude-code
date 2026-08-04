@@ -1,13 +1,12 @@
-﻿namespace MyTodo.Domain.Entities
+namespace MyTodo.Application.DTOs
 {
-    public class LifeArea
+    public class ProblemDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public ICollection<Problem> Problems { get; set; } = new List<Problem>();
+        public int LifeAreaId { get; set; }
     }
 }

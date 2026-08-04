@@ -9,6 +9,7 @@ namespace MyTodo.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ILifeAreaService, LifeAreaService>();
+            services.AddScoped<IProblemService, ProblemService>();
 
             return services;
         }

@@ -10,6 +10,7 @@ namespace MyTodo.Infrastructure.Persistence.DbContext
         }
 
         public DbSet<LifeArea> LifeAreas { get; set; }
+        public DbSet<Problem> Problems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

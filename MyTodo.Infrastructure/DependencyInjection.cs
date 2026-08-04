@@ -15,6 +15,7 @@ namespace MyTodo.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ILifeAreaRepository, LifeAreaRepository>();
+            services.AddScoped<IProblemRepository, ProblemRepository>();
 
             return services;
         }
