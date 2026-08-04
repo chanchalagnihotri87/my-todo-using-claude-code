@@ -20,6 +20,21 @@ namespace MyTodo.Application.Services
             return problems.Select(MapToDto).ToList();
         }
 
+        public async Task<ProblemDto> CreateAsync(CreateProblemDto createProblemDto)
+        {
+            var problem = new Problem
+            {
+                LifeAreaId = createProblemDto.LifeAreaId,
+                Name = createProblemDto.Name,
+                Description = createProblemDto.Description,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _problemRepository.AddAsync(problem);
+
+            return MapToDto(problem);
+        }
+
         private static ProblemDto MapToDto(Problem problem)
         {
             return new ProblemDto
@@ -27,6 +42,7 @@ namespace MyTodo.Application.Services
                 Id = problem.Id,
                 Name = problem.Name,
                 Description = problem.Description,
+                Status = problem.Status,
                 CreatedAt = problem.CreatedAt,
                 UpdatedAt = problem.UpdatedAt,
                 LifeAreaId = problem.LifeAreaId

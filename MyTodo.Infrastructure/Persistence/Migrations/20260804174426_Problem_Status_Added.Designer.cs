@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyTodo.Infrastructure.Persistence.DbContext;
 
@@ -11,9 +12,11 @@ using MyTodo.Infrastructure.Persistence.DbContext;
 namespace MyTodo.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MyTodoDbContext))]
-    partial class MyTodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260804174426_Problem_Status_Added")]
+    partial class Problem_Status_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

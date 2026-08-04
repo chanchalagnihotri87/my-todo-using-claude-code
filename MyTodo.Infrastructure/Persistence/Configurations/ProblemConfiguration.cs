@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyTodo.Domain.Entities;
+using MyTodo.Domain.Enums;
 
 namespace MyTodo.Infrastructure.Persistence.Configurations
 {
@@ -18,6 +19,12 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.Description)
                 .HasMaxLength(1000);
+
+            builder.Property(x => x.Status)
+                .IsRequired()
+                .HasConversion<string>()
+                .HasMaxLength(20)
+                .HasDefaultValue(ProblemStatus.Pending);
 
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
