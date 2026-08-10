@@ -2,7 +2,7 @@ using MyTodo.Domain.Enums;
 
 namespace MyTodo.Application.DTOs
 {
-    public class ProblemDto
+    public class UpdateProblemDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -10,8 +10,5 @@ namespace MyTodo.Application.DTOs
         public ProblemStatus Status { get; set; }
         public bool IsUrgent { get; set; }
         public bool IsImportant { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public int LifeAreaId { get; set; }
     }
 }

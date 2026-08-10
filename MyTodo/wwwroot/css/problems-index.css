@@ -1,0 +1,54 @@
+.kanban-card {
+    cursor: grab;
+}
+
+.kanban-card.dragging {
+    opacity: 0.4;
+}
+
+.kanban-column.drag-over {
+    outline: 2px dashed var(--bs-primary);
+    outline-offset: -2px;
+}
+
+.kanban-column-handle {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.kanban-column-handle:active {
+    cursor: grabbing;
+}
+
+.kanban-column.column-dragging {
+    opacity: 0.4;
+}
+
+.problem-tag-badges {
+    display: inline-flex;
+    gap: 0.35rem;
+}
+
+.tag-badge {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    font-weight: 500;
+}
+
+.tag-badge.tag-inactive {
+    background-color: transparent;
+    color: var(--bs-secondary-color, #6c757d);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.tag-urgent.tag-active {
+    background-color: var(--bs-danger, #dc3545);
+    color: #fff;
+}
+
+.tag-important.tag-active {
+    background-color: var(--bs-primary, #0d6efd);
+    color: #fff;
+}

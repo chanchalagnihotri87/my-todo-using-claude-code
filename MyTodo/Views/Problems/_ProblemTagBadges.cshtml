@@ -1,0 +1,6 @@
+@model ProblemDto
+
+<span class="problem-tag-badges">
+    <span class="badge tag-badge tag-urgent @(Model.IsUrgent ? "tag-active" : "tag-inactive")" data-problem-id="@Model.Id" data-tag="urgent" role="button" title="Toggle Urgent">Urgent</span>
+    <span class="badge tag-badge tag-important @(Model.IsImportant ? "tag-active" : "tag-inactive")" data-problem-id="@Model.Id" data-tag="important" role="button" title="Toggle Important">Important</span>
+</span>

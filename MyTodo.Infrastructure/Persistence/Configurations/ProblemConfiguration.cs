@@ -18,13 +18,21 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
                 .HasMaxLength(200);
 
             builder.Property(x => x.Description)
-                .HasMaxLength(1000);
+                .HasMaxLength(1000);    
 
             builder.Property(x => x.Status)
                 .IsRequired()
                 .HasConversion<string>()
                 .HasMaxLength(20)
                 .HasDefaultValue(ProblemStatus.Pending);
+
+            builder.Property(x => x.IsUrgent)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(x => x.IsImportant)
+                .IsRequired()
+                .HasDefaultValue(false);
 
             builder.Property(x => x.CreatedAt)
                 .IsRequired();

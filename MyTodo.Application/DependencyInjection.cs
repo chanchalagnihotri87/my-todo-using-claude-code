@@ -10,6 +10,7 @@ namespace MyTodo.Application
         {
             services.AddScoped<ILifeAreaService, LifeAreaService>();
             services.AddScoped<IProblemService, ProblemService>();
+            services.AddScoped<IProblemStatusOrderService, ProblemStatusOrderService>();
 
             return services;
         }

@@ -23,7 +23,15 @@
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="d-flex justify-content-end mb-3">
+        <div class="btn-group" role="group" aria-label="View toggle">
+            <button type="button" id="cardViewBtn" class="btn btn-sm btn-outline-primary active view-toggle-btn" data-view="card">Cards</button>
+            <button type="button" id="tableViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="table">Table</button>
+            <button type="button" id="boardViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="board">Board</button>
+        </div>
+    </div>
+
+    <div id="cardView" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var problem in Model)
         {
             <div class="col">
@@ -31,29 +39,12 @@ else
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h5 class="card-title mb-0">@problem.Name</h5>
-                            @{
-                                var badgeClass = problem.Status switch
-                                {
-                                    ProblemStatus.Pending => "bg-secondary",
-                                    ProblemStatus.WorkingOnIt => "bg-warning text-dark",
-                                    ProblemStatus.Resolved => "bg-success",
-                                    ProblemStatus.Discarded => "bg-danger",
-                                    _ => "bg-secondary"
-                                };
-                                var statusText = problem.Status switch
-                                {
-                                    ProblemStatus.Pending => "Pending",
-                                    ProblemStatus.WorkingOnIt => "Working on it",
-                                    ProblemStatus.Resolved => "Resolved",
-                                    ProblemStatus.Discarded => "Discarded",
-                                    _ => problem.Status.ToString()
-                                };
-                            }
-                            <span class="badge @badgeClass">@statusText</span>
+                            <span class="badge @ProblemStatusDisplay.GetBadgeClass(problem.Status)">@ProblemStatusDisplay.GetText(problem.Status)</span>
                         </div>
                         <p class="card-text">
                             @(string.IsNullOrWhiteSpace(problem.Description) ? "No description provided." : problem.Description)
                         </p>
+                        <partial name="_ProblemTagBadges" model="problem" />
                     </div>
                     <div class="card-footer text-muted small">
                         Created @problem.CreatedAt.ToString("MMM d, yyyy")
@@ -62,4 +53,16 @@ else
             </div>
         }
     </div>
+
+    <partial name="_TableView" model="Model" />
+
+    <partial name="_BoardView" model="Model" />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/problems-index.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/problems-index.js" asp-append-version="true"></script>
 }

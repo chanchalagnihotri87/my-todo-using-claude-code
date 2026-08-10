@@ -1,0 +1,42 @@
+@model List<ProblemDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var statuses = (List<ProblemStatus>)ViewBag.ColumnOrder;
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div id="boardView" class="d-none">
+    <input type="hidden" id="antiForgeryToken" value="@antiForgeryToken" />
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+        @foreach (var status in statuses)
+        {
+            var problemsInStatus = Model.Where(p => p.Status == status).ToList();
+            <div class="col">
+                <div class="kanban-column bg-body-tertiary rounded p-2 h-100" data-status="@status">
+                    <h6 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>
+                            <span class="kanban-column-handle me-1" draggable="true" title="Drag to reorder list" aria-hidden="true">⠿</span>
+                            @ProblemStatusDisplay.GetText(status)
+                        </span>
+                        <span class="badge kanban-count-badge @ProblemStatusDisplay.GetBadgeClass(status)">@problemsInStatus.Count</span>
+                    </h6>
+                    <div class="kanban-cards">
+                        <p class="text-muted small mb-0 kanban-empty-hint" style="display:@(problemsInStatus.Any() ? "none" : "block")">No problems.</p>
+                        @foreach (var problem in problemsInStatus)
+                        {
+                            <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-problem-id="@problem.Id">
+                                <div class="card-body py-2 px-3">
+                                    <h6 class="card-title mb-1">@problem.Name</h6>
+                                    <p class="card-text small text-muted mb-0 mb-2">
+                                        @(string.IsNullOrWhiteSpace(problem.Description) ? "No description provided." : problem.Description)
+                                    </p>
+                                    <partial name="_ProblemTagBadges" model="problem" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

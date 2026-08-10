@@ -14,8 +14,11 @@
 ## Rules
 - Controllers depend only on `Service/Interface/` from `MyTodo.Application` (e.g. `ITaskService`) — never call repositories or DbContext directly.
 - Views must NOT call services directly (no `@inject ITaskService` for data-fetching) — all data fetching happens in the Controller. Views only display what's passed to them.
+- Create partial views for reusable UI components (e.g. `_TaskListPartial.cshtml`), and include them in other views via `@Html.Partial("_TaskListPartial", Model.Tasks)`. Create partial views to keep page views clean and DRY.
 - Keep controller actions short: validate input → map to DTO → call service → return view/result.
 - Use ` validation attributes on ViewModels — don't duplicate validation logic already in Application layer.
+- Create separate jquery/JS files for each view that needs JS, and include them in the view via `<script src="..."></script>`.
+- Create separate CSS files for each view that needs custom styling, and include them in the view via `<link rel="stylesheet" href="...">`.
 
 ## Naming
 - ViewModels (input only) suffixed with `ViewModel` (e.g. `CreateTaskViewModel`)

@@ -15,7 +15,8 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
         {
             return await _dbSet.AsNoTracking()
                 .Where(x => x.LifeAreaId == lifeAreaId)
-                .OrderBy(x => x.Name)
+                .OrderBy(x => x.IsUrgent && x.IsImportant ? 0 : x.IsImportant ? 1 : x.IsUrgent ? 2 : 3)
+                .ThenBy(x => x.Name)
                 .ToListAsync();
         }
     }

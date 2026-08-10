@@ -1,0 +1,49 @@
+@model List<ProblemDto>
+
+<div id="tableView" class="table-responsive d-none">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var problem in Model)
+            {
+                <tr>
+                    <td>@problem.Name</td>
+                    <td>@(string.IsNullOrWhiteSpace(problem.Description) ? "No description provided." : problem.Description)</td>
+                    <td><span class="badge @ProblemStatusDisplay.GetBadgeClass(problem.Status)">@ProblemStatusDisplay.GetText(problem.Status)</span></td>
+                    <td><partial name="_ProblemTagBadges" model="problem" /></td>
+                    <td>@problem.CreatedAt.ToString("MMM d, yyyy")</td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-problem-btn"
+                                    data-id="@problem.Id"
+                                    data-name="@problem.Name"
+                                    data-description="@problem.Description"
+                                    data-status="@problem.Status"
+                                    data-is-urgent="@problem.IsUrgent.ToString().ToLower()"
+                                    data-is-important="@problem.IsImportant.ToString().ToLower()">
+                                Edit
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-problem-btn"
+                                    data-id="@problem.Id"
+                                    data-name="@problem.Name">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<partial name="_EditProblemModal" />
+<partial name="_DeleteProblemModal" />
