@@ -17,6 +17,8 @@ namespace MyTodo.Infrastructure
             services.AddScoped<ILifeAreaRepository, LifeAreaRepository>();
             services.AddScoped<IProblemRepository, ProblemRepository>();
             services.AddScoped<IProblemStatusOrderRepository, ProblemStatusOrderRepository>();
+            services.AddScoped<ISolutionRepository, SolutionRepository>();
+            services.AddScoped<IObjectiveRepository, ObjectiveRepository>();
 
             return services;
         }

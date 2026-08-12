@@ -1,0 +1,54 @@
+@model List<ObjectiveDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var solution = (SolutionDto)ViewBag.Solution;
+    ViewData["Title"] = $"Objectives - {solution.Name}";
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+    var completedCount = Model.Count(o => o.Status == ObjectiveStatus.Completed);
+}
+
+<input type="hidden" id="solutionAntiForgeryToken" value="@antiForgeryToken" />
+<input type="hidden" id="objectivesSolutionId" value="@solution.Id" />
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Objectives</h1>
+        <p class="text-muted mb-0">Solution: @solution.Name</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary add-objective-btn">Add Objective</button>
+        <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@solution.ProblemId" class="btn btn-secondary">Back to Solutions</a>
+    </div>
+</div>
+
+<p id="objectivesSummary" class="text-muted small">@completedCount/@Model.Count completed</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No objectives have been added to this solution yet.
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-end mb-3">
+        <div class="btn-group" role="group" aria-label="View toggle">
+            <button type="button" id="tableViewBtn" class="btn btn-sm btn-outline-primary active view-toggle-btn" data-view="table">Table</button>
+            <button type="button" id="boardViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="board">Board</button>
+        </div>
+    </div>
+
+    <partial name="_TableView" model="Model" />
+
+    <partial name="_BoardView" model="Model" />
+}
+
+<partial name="_AddObjectiveModal" />
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/objectives-index.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/objectives.js" asp-append-version="true"></script>
+}

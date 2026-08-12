@@ -2,7 +2,7 @@
 
 ## What this project does
 Asp.Net MVC project with Clean Architecture for a personal assistant application that helps users manage their tasks and to-do lists efficiently.
-User can manage their whole life, such as Life Areas -> Problems -Solutions -> Tasks -> Move to Sprint -> Done. 
+User can manage their whole life, such as Life Areas -> Problems -Solutions -> Objectives -> Tasks -> Move to Sprint -> Done. 
 The application allows users to create, read, update, and delete tasks, set reminders, and categorize tasks based on priority or project.
 
 

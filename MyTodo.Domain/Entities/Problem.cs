@@ -18,5 +18,7 @@ namespace MyTodo.Domain.Entities
 
         public int LifeAreaId { get; set; }
         public LifeArea LifeArea { get; set; } = null!;
+
+        public ICollection<Solution> Solutions { get; set; } = new List<Solution>();
     }
 }

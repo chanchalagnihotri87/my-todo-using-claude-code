@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyTodo.Infrastructure.Persistence.DbContext;
 
@@ -11,9 +12,11 @@ using MyTodo.Infrastructure.Persistence.DbContext;
 namespace MyTodo.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MyTodoDbContext))]
-    partial class MyTodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260811201721_Objective_Added")]
+    partial class Objective_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,6 +67,11 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsCompleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<int>("SolutionId")
                         .HasColumnType("int");
 
@@ -71,13 +79,6 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("NotStarted");
 
                     b.Property<string>("Text")
                         .IsRequired()

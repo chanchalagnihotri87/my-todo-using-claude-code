@@ -1,0 +1,33 @@
+@model List<ObjectiveDto>
+@{
+    var statuses = Enum.GetValues<ObjectiveStatus>();
+}
+
+<div id="boardView" class="d-none">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        @foreach (var status in statuses)
+        {
+            var objectivesInStatus = Model.Where(o => o.Status == status).ToList();
+            <div class="col">
+                <div class="kanban-column bg-body-tertiary rounded p-2 h-100" data-status="@status">
+                    <h6 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>@ObjectiveStatusDisplay.GetText(status)</span>
+                        <span class="badge kanban-count-badge @ObjectiveStatusDisplay.GetBadgeClass(status)">@objectivesInStatus.Count</span>
+                    </h6>
+                    <div class="kanban-cards">
+                        <p class="text-muted small mb-0 kanban-empty-hint" style="display:@(objectivesInStatus.Any() ? "none" : "block")">No objectives.</p>
+                        @foreach (var objective in objectivesInStatus)
+                        {
+                            <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-objective-id="@objective.Id">
+                                <div class="card-body py-2 px-3 d-flex justify-content-between align-items-start gap-2">
+                                    <span class="@(objective.Status == ObjectiveStatus.Completed ? "text-muted" : "")">@objective.Text</span>
+                                    <button type="button" class="btn btn-sm btn-outline-danger objective-delete" data-objective-id="@objective.Id" aria-label="Delete objective">&times;</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

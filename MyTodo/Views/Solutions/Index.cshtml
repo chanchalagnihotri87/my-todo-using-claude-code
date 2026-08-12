@@ -1,0 +1,47 @@
+@model List<SolutionDto>
+@{
+    var problem = (ProblemDto)ViewBag.Problem;
+    ViewData["Title"] = $"Solutions - {problem.Name}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Solutions</h1>
+        <p class="text-muted mb-0">Problem: @problem.Name</p>
+    </div>
+    <div>
+        <a asp-action="Create" asp-route-problemId="@problem.Id" class="btn btn-primary">Add Solution</a>
+        <a asp-controller="Problems" asp-action="Index" asp-route-lifeAreaId="@problem.LifeAreaId" class="btn btn-secondary">Back to Problems</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No solutions have been added to this problem yet.
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-end mb-3">
+        <div class="btn-group" role="group" aria-label="View toggle">
+            <button type="button" id="tableViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="table">Table</button>
+            <button type="button" id="boardViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="board">Board</button>
+            <button type="button" id="focusViewBtn" class="btn btn-sm btn-outline-primary active view-toggle-btn" data-view="focus">Focus</button>
+        </div>
+    </div>
+
+    <partial name="_TableView" model="Model" />
+
+    <partial name="_BoardView" model="Model" />
+
+    <partial name="_FocusBoardView" model="Model" />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/solutions-index.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/solutions-index.js" asp-append-version="true"></script>
+}

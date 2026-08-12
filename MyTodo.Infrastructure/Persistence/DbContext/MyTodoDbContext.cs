@@ -12,6 +12,8 @@ namespace MyTodo.Infrastructure.Persistence.DbContext
         public DbSet<LifeArea> LifeAreas { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<ProblemStatusOrder> ProblemStatusOrders { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
+        public DbSet<Objective> Objectives { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

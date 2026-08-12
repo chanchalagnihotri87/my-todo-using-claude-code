@@ -23,6 +23,7 @@
                     <td>@problem.CreatedAt.ToString("MMM d, yyyy")</td>
                     <td>
                         <div class="btn-group">
+                            <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-outline-primary">Solutions</a>
                             <button type="button" class="btn btn-sm btn-outline-secondary edit-problem-btn"
                                     data-id="@problem.Id"
                                     data-name="@problem.Name"

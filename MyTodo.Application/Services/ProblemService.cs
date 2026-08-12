@@ -21,6 +21,12 @@ namespace MyTodo.Application.Services
             return problems.Select(MapToDto).ToList();
         }
 
+        public async Task<ProblemDto?> GetByIdAsync(int id)
+        {
+            var problem = await _problemRepository.GetByIdAsync(id);
+            return problem == null ? null : MapToDto(problem);
+        }
+
         public async Task<ProblemDto> CreateAsync(CreateProblemDto createProblemDto)
         {
             var problem = new Problem

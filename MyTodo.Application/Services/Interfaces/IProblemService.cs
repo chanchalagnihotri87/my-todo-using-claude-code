@@ -6,6 +6,7 @@ namespace MyTodo.Application.Services.Interfaces
     public interface IProblemService
     {
         Task<List<ProblemDto>> GetByLifeAreaIdAsync(int lifeAreaId);
+        Task<ProblemDto?> GetByIdAsync(int id);
         Task<ProblemDto> CreateAsync(CreateProblemDto createProblemDto);
         Task<ProblemDto?> UpdateAsync(UpdateProblemDto updateProblemDto);
         Task<ProblemDto?> UpdateStatusAsync(int id, ProblemStatus status);

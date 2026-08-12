@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyTodo.Infrastructure.Persistence.DbContext;
 
@@ -11,9 +12,11 @@ using MyTodo.Infrastructure.Persistence.DbContext;
 namespace MyTodo.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MyTodoDbContext))]
-    partial class MyTodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260810181528_Solution_Added")]
+    partial class Solution_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,47 +51,6 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LifeAreas", (string)null);
-                });
-
-            modelBuilder.Entity("MyTodo.Domain.Entities.Objective", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SolutionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("NotStarted");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SolutionId");
-
-                    b.ToTable("Objectives", (string)null);
                 });
 
             modelBuilder.Entity("MyTodo.Domain.Entities.Problem", b =>
@@ -215,17 +177,6 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                     b.ToTable("Solutions", (string)null);
                 });
 
-            modelBuilder.Entity("MyTodo.Domain.Entities.Objective", b =>
-                {
-                    b.HasOne("MyTodo.Domain.Entities.Solution", "Solution")
-                        .WithMany("Objectives")
-                        .HasForeignKey("SolutionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Solution");
-                });
-
             modelBuilder.Entity("MyTodo.Domain.Entities.Problem", b =>
                 {
                     b.HasOne("MyTodo.Domain.Entities.LifeArea", "LifeArea")
@@ -256,11 +207,6 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("MyTodo.Domain.Entities.Problem", b =>
                 {
                     b.Navigation("Solutions");
-                });
-
-            modelBuilder.Entity("MyTodo.Domain.Entities.Solution", b =>
-                {
-                    b.Navigation("Objectives");
                 });
 #pragma warning restore 612, 618
         }

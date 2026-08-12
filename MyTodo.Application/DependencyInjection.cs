@@ -11,6 +11,8 @@ namespace MyTodo.Application
             services.AddScoped<ILifeAreaService, LifeAreaService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IProblemStatusOrderService, ProblemStatusOrderService>();
+            services.AddScoped<ISolutionService, SolutionService>();
+            services.AddScoped<IObjectiveService, ObjectiveService>();
 
             return services;
         }

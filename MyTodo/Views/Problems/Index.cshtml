@@ -45,6 +45,7 @@ else
                             @(string.IsNullOrWhiteSpace(problem.Description) ? "No description provided." : problem.Description)
                         </p>
                         <partial name="_ProblemTagBadges" model="problem" />
+                        <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-outline-primary mt-2">View Solutions</a>
                     </div>
                     <div class="card-footer text-muted small">
                         Created @problem.CreatedAt.ToString("MMM d, yyyy")

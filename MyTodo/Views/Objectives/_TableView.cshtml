@@ -1,0 +1,37 @@
+@model List<ObjectiveDto>
+
+<div id="tableView" class="table-responsive d-none">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Text</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var objective in Model)
+            {
+                <tr data-objective-id="@objective.Id">
+                    <td>
+                        <span class="@(objective.Status == ObjectiveStatus.Completed ? "text-muted" : "")">@objective.Text</span>
+                    </td>
+                    <td><span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span></td>
+                    <td>@objective.CreatedAt.ToString("MMM d, yyyy")</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm objective-status-select w-auto" data-objective-id="@objective.Id">
+                                @foreach (var status in Enum.GetValues<ObjectiveStatus>())
+                                {
+                                    <option value="@status" selected="@(objective.Status == status ? "selected" : null)">@ObjectiveStatusDisplay.GetText(status)</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-sm btn-outline-danger objective-delete" data-objective-id="@objective.Id" aria-label="Delete objective">&times;</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

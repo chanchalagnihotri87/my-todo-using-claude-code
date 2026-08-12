@@ -1,0 +1,42 @@
+@model List<SolutionDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var statuses = Enum.GetValues<SolutionStatus>().Where(s => s != SolutionStatus.Discarded);
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div id="boardView" class="d-none">
+    <input type="hidden" id="solutionAntiForgeryToken" value="@antiForgeryToken" />
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3">
+        @foreach (var status in statuses)
+        {
+            var solutionsInStatus = Model.Where(s => s.Status == status).ToList();
+            <div class="col">
+                <div class="kanban-column bg-body-tertiary rounded p-2 h-100" data-status="@status">
+                    <h6 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>@SolutionStatusDisplay.GetText(status)</span>
+                        <span class="badge kanban-count-badge @SolutionStatusDisplay.GetBadgeClass(status)">@solutionsInStatus.Count</span>
+                    </h6>
+                    <div class="kanban-cards">
+                        <p class="text-muted small mb-0 kanban-empty-hint" style="display:@(solutionsInStatus.Any() ? "none" : "block")">No solutions.</p>
+                        @foreach (var solution in solutionsInStatus)
+                        {
+                            <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-solution-id="@solution.Id">
+                                <div class="card-body py-2 px-3">
+                                    <h6 class="card-title mb-1">@solution.Name</h6>
+                                    <p class="card-text small text-muted mb-0 mb-2">
+                                        @(string.IsNullOrWhiteSpace(solution.Description) ? "No description provided." : solution.Description)
+                                    </p>
+                                    <span class="badge bg-warning text-dark twenty-percent-badge @(solution.IsTwentyPercent ? "" : "d-none")">20%</span>
+                                    <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-secondary">
+                                        &#127919; @solution.CompletedObjectivesCount/@solution.TotalObjectivesCount
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
