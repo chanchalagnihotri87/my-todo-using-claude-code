@@ -1,0 +1,35 @@
+@model List<ExperimentDto>
+@{
+    var statuses = Enum.GetValues<ExperimentStatus>().Where(s => s != ExperimentStatus.Discarded);
+}
+
+<div id="boardView" class="d-none">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+        @foreach (var status in statuses)
+        {
+            var experimentsInStatus = Model.Where(e => e.Status == status).ToList();
+            <div class="col">
+                <div class="kanban-column bg-body-tertiary rounded p-2 h-100" data-status="@status">
+                    <h6 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>@ExperimentStatusDisplay.GetText(status)</span>
+                        <span class="badge kanban-count-badge @ExperimentStatusDisplay.GetBadgeClass(status)">@experimentsInStatus.Count</span>
+                    </h6>
+                    <div class="kanban-cards">
+                        <p class="text-muted small mb-0 kanban-empty-hint" style="display:@(experimentsInStatus.Any() ? "none" : "block")">No experiments.</p>
+                        @foreach (var experiment in experimentsInStatus)
+                        {
+                            <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-experiment-id="@experiment.Id">
+                                <div class="card-body py-2 px-3">
+                                    <h6 class="card-title mb-1">@experiment.Name</h6>
+                                    <p class="card-text small text-muted mb-0">
+                                        @(string.IsNullOrWhiteSpace(experiment.Description) ? "No description provided." : experiment.Description)
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

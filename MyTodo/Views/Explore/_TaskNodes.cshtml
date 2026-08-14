@@ -1,0 +1,25 @@
+@model List<TodoTaskDto>
+
+@if (!Model.Any())
+{
+    <p class="text-muted small tree-empty mb-0">No tasks yet.</p>
+}
+else
+{
+    <div class="tree tree-level-4">
+        @foreach (var task in Model)
+        {
+            <div class="tree-node tree-leaf">
+                <div class="tree-node-header">
+                    <span class="tree-node-label">@task.Name</span>
+                    <span class="badge @TodoStatusDisplay.GetBadgeClass(task.Status)">@TodoStatusDisplay.GetText(task.Status)</span>
+                    @if (!string.IsNullOrWhiteSpace(task.SprintName))
+                    {
+                        <span class="text-muted small">@task.SprintName</span>
+                    }
+                    <a class="tree-manage-link" asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@task.ObjectiveId">Manage</a>
+                </div>
+            </div>
+        }
+    </div>
+}

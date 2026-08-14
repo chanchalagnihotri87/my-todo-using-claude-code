@@ -23,6 +23,10 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
                 .HasMaxLength(20)
                 .HasDefaultValue(ObjectiveStatus.NotStarted);
 
+            builder.Property(x => x.IsTwentyPercent)
+                .IsRequired()
+                .HasDefaultValue(false);
+
             builder.Property(x => x.SortOrder)
                 .IsRequired()
                 .HasDefaultValue(0);

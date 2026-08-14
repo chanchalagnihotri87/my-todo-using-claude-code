@@ -21,6 +21,12 @@
     </div>
 </div>
 
+@{
+    ViewData["SolutionId"] = solution.Id;
+    ViewData["ActiveTab"] = "Objectives";
+}
+<partial name="_SolutionTabHeader" />
+
 <p id="objectivesSummary" class="text-muted small">@completedCount/@Model.Count completed</p>
 
 @if (!Model.Any())
@@ -35,15 +41,20 @@ else
         <div class="btn-group" role="group" aria-label="View toggle">
             <button type="button" id="tableViewBtn" class="btn btn-sm btn-outline-primary active view-toggle-btn" data-view="table">Table</button>
             <button type="button" id="boardViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="board">Board</button>
+            <button type="button" id="focusViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="focus">Focus</button>
         </div>
     </div>
 
     <partial name="_TableView" model="Model" />
 
     <partial name="_BoardView" model="Model" />
+
+    <partial name="_FocusView" model="Model" />
 }
 
 <partial name="_AddObjectiveModal" />
+<partial name="_EditObjectiveModal" />
+<partial name="_DeleteObjectiveModal" />
 
 @section Styles {
     <link rel="stylesheet" href="~/css/objectives-index.css" asp-append-version="true" />

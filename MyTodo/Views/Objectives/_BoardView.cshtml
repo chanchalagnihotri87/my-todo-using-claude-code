@@ -19,9 +19,9 @@
                         @foreach (var objective in objectivesInStatus)
                         {
                             <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-objective-id="@objective.Id">
-                                <div class="card-body py-2 px-3 d-flex justify-content-between align-items-start gap-2">
+                                <div class="card-body py-2 px-3">
                                     <span class="@(objective.Status == ObjectiveStatus.Completed ? "text-muted" : "")">@objective.Text</span>
-                                    <button type="button" class="btn btn-sm btn-outline-danger objective-delete" data-objective-id="@objective.Id" aria-label="Delete objective">&times;</button>
+                                    <span class="badge bg-warning text-dark twenty-percent-badge @(objective.IsTwentyPercent ? "" : "d-none")">20%</span>
                                 </div>
                             </div>
                         }

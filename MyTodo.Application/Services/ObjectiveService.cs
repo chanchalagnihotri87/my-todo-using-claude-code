@@ -21,6 +21,18 @@ namespace MyTodo.Application.Services
             return objectives.Select(MapToDto).ToList();
         }
 
+        public async Task<List<ObjectiveDto>> GetAllAsync()
+        {
+            var objectives = await _objectiveRepository.GetAllAsync();
+            return objectives.Select(MapToDto).OrderBy(x => x.Text).ToList();
+        }
+
+        public async Task<ObjectiveDto?> GetByIdAsync(int id)
+        {
+            var objective = await _objectiveRepository.GetByIdAsync(id);
+            return objective == null ? null : MapToDto(objective);
+        }
+
         public async Task<ObjectiveDto> CreateAsync(CreateObjectiveDto createObjectiveDto)
         {
             var existing = await _objectiveRepository.GetBySolutionIdAsync(createObjectiveDto.SolutionId);
@@ -38,19 +50,20 @@ namespace MyTodo.Application.Services
             return MapToDto(objective);
         }
 
-        public async Task<bool> UpdateStatusAsync(int id, ObjectiveStatus status)
+        public async Task<ObjectiveDto?> UpdateAsync(UpdateObjectiveDto updateObjectiveDto)
         {
-            var objective = await _objectiveRepository.GetByIdAsync(id);
+            var objective = await _objectiveRepository.GetByIdAsync(updateObjectiveDto.Id);
             if (objective == null)
             {
-                return false;
+                return null;
             }
 
-            objective.Status = status;
-            objective.CompletedAt = status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
+            objective.Text = updateObjectiveDto.Text;
+            objective.Status = updateObjectiveDto.Status;
+            objective.CompletedAt = updateObjectiveDto.Status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
             await _objectiveRepository.UpdateAsync(objective);
 
-            return true;
+            return MapToDto(objective);
         }
 
         public async Task<bool> ReorderAsync(int id, ObjectiveStatus status, List<int> orderedIds)
@@ -63,6 +76,32 @@ namespace MyTodo.Application.Services
 
             objective.Status = status;
             objective.CompletedAt = status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
+            await _objectiveRepository.UpdateAsync(objective);
+
+            for (var index = 0; index < orderedIds.Count; index++)
+            {
+                var current = orderedIds[index] == id ? objective : await _objectiveRepository.GetByIdAsync(orderedIds[index]);
+                if (current == null)
+                {
+                    continue;
+                }
+
+                current.SortOrder = index;
+                await _objectiveRepository.UpdateAsync(current);
+            }
+
+            return true;
+        }
+
+        public async Task<bool> ReorderFocusAsync(int id, bool isTwentyPercent, List<int> orderedIds)
+        {
+            var objective = await _objectiveRepository.GetByIdAsync(id);
+            if (objective == null)
+            {
+                return false;
+            }
+
+            objective.IsTwentyPercent = isTwentyPercent;
             await _objectiveRepository.UpdateAsync(objective);
 
             for (var index = 0; index < orderedIds.Count; index++)
@@ -101,6 +140,7 @@ namespace MyTodo.Application.Services
                 SolutionId = objective.SolutionId,
                 Text = objective.Text,
                 Status = objective.Status,
+                IsTwentyPercent = objective.IsTwentyPercent,
                 CompletedAt = objective.CompletedAt,
                 SortOrder = objective.SortOrder,
                 CreatedAt = objective.CreatedAt

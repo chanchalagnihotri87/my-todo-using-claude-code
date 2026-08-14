@@ -1,0 +1,40 @@
+@model List<ObjectiveDto>
+@{
+    var focusGroups = new[]
+    {
+        (Key: true, Title: "20% (Focus)", BadgeClass: "bg-warning text-dark", GroupName: "twentyPercent"),
+        (Key: false, Title: "Normal", BadgeClass: "bg-secondary", GroupName: "normal")
+    };
+}
+
+<div id="focusView" class="d-none">
+    <div class="d-flex justify-content-end mb-2">
+        <button type="button" id="focusSwapColumnsBtn" class="btn btn-sm btn-outline-secondary">&#8646; Swap Columns</button>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        @foreach (var group in focusGroups)
+        {
+            var objectivesInGroup = Model.Where(o => o.IsTwentyPercent == group.Key).ToList();
+            <div class="col" data-group="@group.GroupName">
+                <div class="kanban-column bg-body-tertiary rounded p-2 h-100" data-twenty-percent="@group.Key.ToString().ToLowerInvariant()">
+                    <h6 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>@group.Title</span>
+                        <span class="badge kanban-count-badge @group.BadgeClass">@objectivesInGroup.Count</span>
+                    </h6>
+                    <div class="kanban-cards">
+                        <p class="text-muted small mb-0 kanban-empty-hint" style="display:@(objectivesInGroup.Any() ? "none" : "block")">No objectives.</p>
+                        @foreach (var objective in objectivesInGroup)
+                        {
+                            <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-objective-id="@objective.Id">
+                                <div class="card-body py-2 px-3 d-flex justify-content-between align-items-start gap-2">
+                                    <span class="@(objective.Status == ObjectiveStatus.Completed ? "text-muted" : "")">@objective.Text</span>
+                                    <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

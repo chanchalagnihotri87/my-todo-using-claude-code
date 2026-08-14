@@ -1,0 +1,23 @@
+@model List<ObjectiveDto>
+
+@if (!Model.Any())
+{
+    <p class="text-muted small tree-empty mb-0">No objectives yet.</p>
+}
+else
+{
+    <div class="tree tree-level-3">
+        @foreach (var objective in Model)
+        {
+            <div class="tree-node">
+                <div class="tree-node-header" role="button" aria-expanded="false">
+                    <span class="tree-node-label">@objective.Text</span>
+                    <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
+                    <a class="tree-manage-link" asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@objective.SolutionId">Manage</a>
+                    <span class="tree-arrow"></span>
+                </div>
+                <div class="tree-children d-none" data-url="@Url.Action("Tasks", "Explore", new { objectiveId = objective.Id })"></div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,77 @@
+.tree-node {
+    margin-bottom: 0.5rem;
+}
+
+.tree-node-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    padding: 0.6rem 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.tree-node-header:hover {
+    background-color: var(--bs-secondary-bg, #e9ecef);
+}
+
+.tree-leaf .tree-node-header {
+    cursor: default;
+}
+
+.tree-leaf .tree-node-header:hover {
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+}
+
+.tree-node-label {
+    font-weight: 400;
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+.tree-node-header .badge {
+    background-color: var(--bs-secondary-bg, #e9ecef) !important;
+    color: var(--bs-secondary-color, #6c757d) !important;
+    font-weight: 500;
+}
+
+.tree-manage-link {
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.tree-arrow {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-left: auto;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease-in-out;
+}
+
+.tree-node-header.expanded .tree-arrow {
+    transform: rotate(45deg);
+}
+
+.tree-children {
+    margin-left: 1.75rem;
+    margin-top: 0.5rem;
+    padding-left: 0.75rem;
+    border-left: 1px dashed var(--bs-border-color, #dee2e6);
+}
+
+.tree-empty,
+.tree-loading,
+.tree-load-error {
+    margin-left: 1.75rem;
+}
+
+.tree-load-error {
+    color: var(--bs-danger, #dc3545);
+    cursor: pointer;
+    text-decoration: underline;
+}

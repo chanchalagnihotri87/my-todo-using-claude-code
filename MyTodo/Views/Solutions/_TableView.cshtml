@@ -23,9 +23,7 @@
                         <span class="badge bg-warning text-dark twenty-percent-badge @(solution.IsTwentyPercent ? "" : "d-none")">20%</span>
                     </td>
                     <td>
-                        <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-secondary">
-                            &#127919; @solution.CompletedObjectivesCount/@solution.TotalObjectivesCount
-                        </a>
+                        <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-primary">Details</a>
                     </td>
                     <td>@solution.CreatedAt.ToString("MMM d, yyyy")</td>
                 </tr>

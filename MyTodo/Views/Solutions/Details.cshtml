@@ -1,0 +1,22 @@
+@model SolutionDto
+@{
+    ViewData["Title"] = $"Details - {Model.Name}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>@Model.Name</h1>
+        <p class="text-muted mb-1">
+            @(string.IsNullOrWhiteSpace(Model.Description) ? "No description provided." : Model.Description)
+        </p>
+        <span class="badge @SolutionStatusDisplay.GetBadgeClass(Model.Status)">@SolutionStatusDisplay.GetText(Model.Status)</span>
+    </div>
+    <div>
+        <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@Model.ProblemId" class="btn btn-secondary">Back to Solutions</a>
+    </div>
+</div>
+
+@{
+    ViewData["SolutionId"] = Model.Id;
+}
+<partial name="_SolutionTabHeader" />

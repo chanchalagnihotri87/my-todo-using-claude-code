@@ -1,0 +1,39 @@
+@model List<LifeAreaDto>
+@{
+    ViewData["Title"] = "Explore";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Explore</h1>
+    <a asp-controller="LifeAreas" asp-action="Index" class="btn btn-secondary">Manage Life Areas</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No life areas have been created yet.
+    </div>
+}
+else
+{
+    <div class="tree tree-level-0">
+        @foreach (var lifeArea in Model)
+        {
+            <div class="tree-node">
+                <div class="tree-node-header" role="button" aria-expanded="false">
+                    <span class="tree-node-label">@lifeArea.Name</span>
+                    <span class="tree-arrow"></span>
+                </div>
+                <div class="tree-children d-none" data-url="@Url.Action("Problems", "Explore", new { lifeAreaId = lifeArea.Id })"></div>
+            </div>
+        }
+    </div>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/explore.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/explore.js" asp-append-version="true"></script>
+}

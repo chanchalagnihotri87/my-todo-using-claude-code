@@ -1,0 +1,29 @@
+<div class="modal fade" id="addExperimentModal" tabindex="-1" aria-labelledby="addExperimentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addExperimentForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addExperimentModalLabel">Add Experiment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="addExperimentError" class="alert alert-danger d-none" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label for="newExperimentName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="newExperimentName" maxlength="200" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newExperimentDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="newExperimentDescription" maxlength="1000" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

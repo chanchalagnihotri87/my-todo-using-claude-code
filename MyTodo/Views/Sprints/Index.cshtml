@@ -1,0 +1,27 @@
+@model List<TodoTaskDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    ViewData["Title"] = "Current Sprint";
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<input type="hidden" id="sprintDetailsAntiForgeryToken" value="@antiForgeryToken" />
+
+@if (ViewBag.Sprint == null)
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Current Sprint</h1>
+        <a asp-controller="Sprints" asp-action="All" class="btn btn-secondary">All Sprints</a>
+    </div>
+    <div class="alert alert-info" role="alert">
+        No sprint is currently active. See <a asp-controller="Sprints" asp-action="All">All Sprints</a> to view or create one.
+    </div>
+}
+else
+{
+    <partial name="_SprintDetailContent" model="Model" />
+}
+
+@section Scripts {
+    <script src="~/js/sprint-details.js" asp-append-version="true"></script>
+}

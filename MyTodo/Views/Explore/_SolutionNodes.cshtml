@@ -1,0 +1,24 @@
+@model List<SolutionDto>
+
+@if (!Model.Any())
+{
+    <p class="text-muted small tree-empty mb-0">No solutions yet.</p>
+}
+else
+{
+    <div class="tree tree-level-2">
+        @foreach (var solution in Model)
+        {
+            <div class="tree-node">
+                <div class="tree-node-header" role="button" aria-expanded="false">
+                    <span class="tree-node-label">@solution.Name</span>
+                    <span class="badge @SolutionStatusDisplay.GetBadgeClass(solution.Status)">@SolutionStatusDisplay.GetText(solution.Status)</span>
+                    <span class="text-muted small">@solution.CompletedObjectivesCount/@solution.TotalObjectivesCount objectives</span>
+                    <a class="tree-manage-link" asp-controller="Solutions" asp-action="Index" asp-route-problemId="@solution.ProblemId">Manage</a>
+                    <span class="tree-arrow"></span>
+                </div>
+                <div class="tree-children d-none" data-url="@Url.Action("Objectives", "Explore", new { solutionId = solution.Id })"></div>
+            </div>
+        }
+    </div>
+}

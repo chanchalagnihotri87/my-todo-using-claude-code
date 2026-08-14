@@ -31,6 +31,17 @@ namespace MyTodo.Controllers
             return View(solutions);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var solution = await _solutionService.GetByIdAsync(id);
+            if (solution == null)
+            {
+                return NotFound();
+            }
+
+            return View(solution);
+        }
+
         public async Task<IActionResult> Create(int problemId)
         {
             var problem = await _problemService.GetByIdAsync(problemId);

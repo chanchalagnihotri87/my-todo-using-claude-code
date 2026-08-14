@@ -22,6 +22,51 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MyTodo.Domain.Entities.Experiment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("SolutionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Innovation");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SolutionId");
+
+                    b.ToTable("Experiments", (string)null);
+                });
+
             modelBuilder.Entity("MyTodo.Domain.Entities.LifeArea", b =>
                 {
                     b.Property<int>("Id")
@@ -63,6 +108,11 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsTwentyPercent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("SolutionId")
                         .HasColumnType("int");
@@ -215,6 +265,144 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                     b.ToTable("Solutions", (string)null);
                 });
 
+            modelBuilder.Entity("MyTodo.Domain.Entities.Sprint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sprints", (string)null);
+                });
+
+            modelBuilder.Entity("MyTodo.Domain.Entities.Todo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsFrog")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsImportant")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsUrgent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateOnly>("TodoDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("TodoTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TodoTaskId")
+                        .IsUnique();
+
+                    b.ToTable("Todos", (string)null);
+                });
+
+            modelBuilder.Entity("MyTodo.Domain.Entities.TodoTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AddedInTodoList")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ObjectiveId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SprintId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<DateTime>("TodoDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObjectiveId");
+
+                    b.HasIndex("SprintId");
+
+                    b.ToTable("TodoTasks", (string)null);
+                });
+
+            modelBuilder.Entity("MyTodo.Domain.Entities.Experiment", b =>
+                {
+                    b.HasOne("MyTodo.Domain.Entities.Solution", "Solution")
+                        .WithMany()
+                        .HasForeignKey("SolutionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Solution");
+                });
+
             modelBuilder.Entity("MyTodo.Domain.Entities.Objective", b =>
                 {
                     b.HasOne("MyTodo.Domain.Entities.Solution", "Solution")
@@ -248,6 +436,35 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
                     b.Navigation("Problem");
                 });
 
+            modelBuilder.Entity("MyTodo.Domain.Entities.Todo", b =>
+                {
+                    b.HasOne("MyTodo.Domain.Entities.TodoTask", "TodoTask")
+                        .WithOne("Todo")
+                        .HasForeignKey("MyTodo.Domain.Entities.Todo", "TodoTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TodoTask");
+                });
+
+            modelBuilder.Entity("MyTodo.Domain.Entities.TodoTask", b =>
+                {
+                    b.HasOne("MyTodo.Domain.Entities.Objective", "Objective")
+                        .WithMany()
+                        .HasForeignKey("ObjectiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyTodo.Domain.Entities.Sprint", "Sprint")
+                        .WithMany("TodoTasks")
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Objective");
+
+                    b.Navigation("Sprint");
+                });
+
             modelBuilder.Entity("MyTodo.Domain.Entities.LifeArea", b =>
                 {
                     b.Navigation("Problems");
@@ -261,6 +478,16 @@ namespace MyTodo.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("MyTodo.Domain.Entities.Solution", b =>
                 {
                     b.Navigation("Objectives");
+                });
+
+            modelBuilder.Entity("MyTodo.Domain.Entities.Sprint", b =>
+                {
+                    b.Navigation("TodoTasks");
+                });
+
+            modelBuilder.Entity("MyTodo.Domain.Entities.TodoTask", b =>
+                {
+                    b.Navigation("Todo");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,40 @@
+@model List<ExperimentDto>
+
+<div id="tableView" class="table-responsive d-none">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var experiment in Model)
+            {
+                <tr data-experiment-id="@experiment.Id">
+                    <td>@experiment.Name</td>
+                    <td><span class="badge @ExperimentStatusDisplay.GetBadgeClass(experiment.Status)">@ExperimentStatusDisplay.GetText(experiment.Status)</span></td>
+                    <td>@(string.IsNullOrWhiteSpace(experiment.Description) ? "No description provided." : experiment.Description)</td>
+                    <td>@experiment.CreatedAt.ToString("MMM d, yyyy")</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-experiment-btn"
+                                    data-id="@experiment.Id"
+                                    data-name="@experiment.Name"
+                                    data-description="@experiment.Description"
+                                    data-status="@experiment.Status">
+                                Edit
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-experiment-btn" data-id="@experiment.Id" data-name="@experiment.Name">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -53,15 +53,27 @@ namespace MyTodo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus([FromBody] UpdateObjectiveStatusRequest request)
+        public async Task<IActionResult> Edit([FromBody] UpdateObjectiveRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Text) || request.Text.Length > 300)
+            {
+                return BadRequest();
+            }
+
             if (!Enum.TryParse<ObjectiveStatus>(request.Status, out var status))
             {
                 return BadRequest();
             }
 
-            var updated = await _objectiveService.UpdateStatusAsync(request.Id, status);
-            if (!updated)
+            var updateObjectiveDto = new UpdateObjectiveDto
+            {
+                Id = request.Id,
+                Text = request.Text,
+                Status = status
+            };
+
+            var updated = await _objectiveService.UpdateAsync(updateObjectiveDto);
+            if (updated == null)
             {
                 return NotFound();
             }
@@ -79,6 +91,19 @@ namespace MyTodo.Controllers
             }
 
             var updated = await _objectiveService.ReorderAsync(request.Id, status, request.OrderedIds);
+            if (!updated)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReorderFocus([FromBody] ReorderObjectivesFocusRequest request)
+        {
+            var updated = await _objectiveService.ReorderFocusAsync(request.Id, request.IsTwentyPercent, request.OrderedIds);
             if (!updated)
             {
                 return NotFound();

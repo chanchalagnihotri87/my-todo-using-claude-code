@@ -14,6 +14,10 @@ namespace MyTodo.Infrastructure.Persistence.DbContext
         public DbSet<ProblemStatusOrder> ProblemStatusOrders { get; set; }
         public DbSet<Solution> Solutions { get; set; }
         public DbSet<Objective> Objectives { get; set; }
+        public DbSet<TodoTask> TodoTasks { get; set; }
+        public DbSet<Experiment> Experiments { get; set; }
+        public DbSet<Sprint> Sprints { get; set; }
+        public DbSet<Todo> Todos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

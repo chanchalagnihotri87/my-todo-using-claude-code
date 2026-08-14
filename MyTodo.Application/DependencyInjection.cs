@@ -13,6 +13,10 @@ namespace MyTodo.Application
             services.AddScoped<IProblemStatusOrderService, ProblemStatusOrderService>();
             services.AddScoped<ISolutionService, SolutionService>();
             services.AddScoped<IObjectiveService, ObjectiveService>();
+            services.AddScoped<ITodoTaskService, TodoTaskService>();
+            services.AddScoped<IExperimentService, ExperimentService>();
+            services.AddScoped<ISprintService, SprintService>();
+            services.AddScoped<ITodoService, TodoService>();
 
             return services;
         }

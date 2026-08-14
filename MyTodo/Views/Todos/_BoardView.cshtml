@@ -1,0 +1,34 @@
+@model List<TodoDto>
+@{
+    var statuses = Enum.GetValues<TodoStatus>();
+}
+
+<div id="boardView" class="d-none">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        @foreach (var status in statuses)
+        {
+            var todosInStatus = Model.Where(t => t.TaskStatus == status).ToList();
+            <div class="col">
+                <div class="kanban-column bg-body-tertiary rounded p-2 h-100" data-status="@((int)status)">
+                    <h6 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>@TodoStatusDisplay.GetText(status)</span>
+                        <span class="badge kanban-count-badge @TodoStatusDisplay.GetBadgeClass(status)">@todosInStatus.Count</span>
+                    </h6>
+                    <div class="kanban-cards">
+                        <p class="text-muted small mb-0 kanban-empty-hint" style="display:@(todosInStatus.Any() ? "none" : "block")">No tasks.</p>
+                        @foreach (var todo in todosInStatus)
+                        {
+                            <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-task-id="@todo.TodoTaskId">
+                                <div class="card-body py-2 px-3">
+                                    <div>@todo.TodoTaskName</div>
+                                    <div class="text-muted extra-small">@todo.ObjectiveText</div>
+                                    <div class="mt-1"><partial name="_TodoTagBadges" model="todo" /></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

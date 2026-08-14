@@ -1,0 +1,13 @@
+@{
+    var solutionId = ViewData["SolutionId"] is int id ? id : 0;
+    var activeTab = ViewData["ActiveTab"] as string ?? "";
+}
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link @(activeTab == "Objectives" ? "active" : "")" asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solutionId">Objectives</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(activeTab == "Experiments" ? "active" : "")" asp-controller="Experiments" asp-action="Index" asp-route-solutionId="@solutionId">Experiments</a>
+    </li>
+</ul>

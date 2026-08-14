@@ -1,0 +1,74 @@
+@model List<TodoTaskDto>
+@{
+    var sprint = (SprintDto)ViewBag.Sprint;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>@sprint.Name</h1>
+        <p class="text-muted mb-1">
+            @(string.IsNullOrWhiteSpace(sprint.Description) ? "No description provided." : sprint.Description)
+        </p>
+        <p class="text-muted mb-0">
+            @sprint.StartDate.ToString("MMM d, yyyy") - @sprint.EndDate.ToString("MMM d, yyyy")
+        </p>
+    </div>
+    <div>
+        <a asp-controller="Sprints" asp-action="All" class="btn btn-secondary">All Sprints</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No tasks have been assigned to this sprint yet.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Todo</th>
+                    <th>Objective</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model)
+                {
+                    <tr data-task-id="@task.Id">
+
+                        <td>
+                            <span class="@(task.Status == TodoStatus.Completed ? "text-muted" : "")">@task.Name</span>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm task-status-select" data-task-id="@task.Id" style="width: auto;">
+                                @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
+                                {
+                                    <option value="@((int)status)" selected="@(task.Status == status ? "selected" : null)">@TodoStatusDisplay.GetText(status)</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            @if (task.TodoId == null)
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-primary add-to-todo-btn" data-task-id="@task.Id">Add to Todo</button>
+                            }
+                            else
+                            {
+                                <small class="text-muted todo-day-label d-inline-block text-center" style="width: 2rem;">@task.TodoDate!.Value.ToString("ddd")</small>
+                                <input type="date" class="form-control form-control-sm d-inline-block todo-date-input" style="width: auto;"
+                                       data-todo-id="@task.TodoId" value="@task.TodoDate!.Value.ToString("yyyy-MM-dd")" />
+                            }
+                        </td>
+                        <td>@task.ObjectiveText</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,38 @@
+@model List<TodoDto>
+
+<div id="tableView" class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Objective</th>
+                <th>Sprint</th>
+                <th>Priority</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in Model)
+            {
+                <tr data-todo-task-id="@todo.TodoTaskId">
+                    <td>
+                        <span class="@(todo.TaskStatus == TodoStatus.Completed ? "text-muted" : "")">@todo.TodoTaskName</span>
+                    </td>
+                    <td>
+                        <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@todo.ObjectiveId">@todo.ObjectiveText</a>
+                    </td>
+                    <td>@(todo.SprintName ?? "—")</td>
+                    <td><partial name="_TodoTagBadges" model="todo" /></td>
+                    <td>
+                        <select class="form-select form-select-sm task-status-select" data-task-id="@todo.TodoTaskId" style="width: auto;">
+                            @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
+                            {
+                                <option value="@((int)status)" selected="@(todo.TaskStatus == status ? "selected" : null)">@TodoStatusDisplay.GetText(status)</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

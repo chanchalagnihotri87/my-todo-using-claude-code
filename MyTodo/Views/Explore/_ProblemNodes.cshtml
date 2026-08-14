@@ -1,0 +1,31 @@
+@model List<ProblemDto>
+
+@if (!Model.Any())
+{
+    <p class="text-muted small tree-empty mb-0">No problems yet.</p>
+}
+else
+{
+    <div class="tree tree-level-1">
+        @foreach (var problem in Model)
+        {
+            <div class="tree-node">
+                <div class="tree-node-header" role="button" aria-expanded="false">
+                    <span class="tree-node-label">@problem.Name</span>
+                    <span class="badge @ProblemStatusDisplay.GetBadgeClass(problem.Status)">@ProblemStatusDisplay.GetText(problem.Status)</span>
+                    @if (problem.IsUrgent)
+                    {
+                        <span class="badge bg-danger">Urgent</span>
+                    }
+                    @if (problem.IsImportant)
+                    {
+                        <span class="badge bg-primary">Important</span>
+                    }
+                    <a class="tree-manage-link" asp-controller="Problems" asp-action="Index" asp-route-lifeAreaId="@problem.LifeAreaId">Manage</a>
+                    <span class="tree-arrow"></span>
+                </div>
+                <div class="tree-children d-none" data-url="@Url.Action("Solutions", "Explore", new { problemId = problem.Id })"></div>
+            </div>
+        }
+    </div>
+}

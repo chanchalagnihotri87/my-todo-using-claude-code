@@ -1,0 +1,59 @@
+@model List<ExperimentDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var solution = (SolutionDto)ViewBag.Solution;
+    ViewData["Title"] = $"Experiments - {solution.Name}";
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<input type="hidden" id="experimentAntiForgeryToken" value="@antiForgeryToken" />
+<input type="hidden" id="experimentsSolutionId" value="@solution.Id" />
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Experiments</h1>
+        <p class="text-muted mb-0">Solution: @solution.Name</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary add-experiment-btn">Add Experiment</button>
+        <a asp-controller="Solutions" asp-action="Details" asp-route-id="@solution.Id" class="btn btn-secondary">Back to Details</a>
+    </div>
+</div>
+
+@{
+    ViewData["SolutionId"] = solution.Id;
+    ViewData["ActiveTab"] = "Experiments";
+}
+<partial name="_SolutionTabHeader" />
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No experiments have been added to this solution yet.
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-end mb-3">
+        <div class="btn-group" role="group" aria-label="View toggle">
+            <button type="button" id="tableViewBtn" class="btn btn-sm btn-outline-primary active view-toggle-btn" data-view="table">Table</button>
+            <button type="button" id="boardViewBtn" class="btn btn-sm btn-outline-primary view-toggle-btn" data-view="board">Board</button>
+        </div>
+    </div>
+
+    <partial name="_TableView" model="Model" />
+
+    <partial name="_BoardView" model="Model" />
+}
+
+<partial name="_AddExperimentModal" />
+<partial name="_EditExperimentModal" />
+<partial name="_DeleteExperimentModal" />
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/experiments-index.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/experiments-index.js" asp-append-version="true"></script>
+}

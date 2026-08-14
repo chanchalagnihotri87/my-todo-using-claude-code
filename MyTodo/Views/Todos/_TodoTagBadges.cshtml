@@ -1,0 +1,7 @@
+@model TodoDto
+
+<span class="todo-tag-badges">
+    <span class="badge tag-badge tag-frog @(Model.IsFrog ? "tag-active" : "tag-inactive")" data-todo-id="@Model.Id" data-tag="frog" role="button" title="Toggle Frog (do this first)">🐸 Frog</span>
+    <span class="badge tag-badge tag-urgent @(Model.IsUrgent ? "tag-active" : "tag-inactive")" data-todo-id="@Model.Id" data-tag="urgent" role="button" title="Toggle Urgent">Urgent</span>
+    <span class="badge tag-badge tag-important @(Model.IsImportant ? "tag-active" : "tag-inactive")" data-todo-id="@Model.Id" data-tag="important" role="button" title="Toggle Important">Important</span>
+</span>

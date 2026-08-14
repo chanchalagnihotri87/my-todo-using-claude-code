@@ -1,0 +1,95 @@
+@model List<TodoTaskDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var objective = (ObjectiveDto)ViewBag.Objective;
+    var sprints = (List<SprintDto>)ViewBag.Sprints;
+    ViewData["Title"] = $"Tasks - {objective.Text}";
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<input type="hidden" id="taskAntiForgeryToken" value="@antiForgeryToken" />
+<input type="hidden" id="tasksObjectiveId" value="@objective.Id" />
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Tasks</h1>
+        <p class="text-muted mb-0">Objective: @objective.Text</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary add-task-btn">Add Task</button>
+        <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@objective.SolutionId" class="btn btn-secondary">Back to Objectives</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No tasks have been added to this objective yet.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Sprint</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model)
+                {
+                    <tr data-task-id="@task.Id">
+                        <td>
+                            <select class="form-select form-select-sm task-status-select" data-task-id="@task.Id" style="width: auto;">
+                                @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
+                                {
+                                    <option value="@((int)status)" selected="@(task.Status == status ? "selected" : null)">@TodoStatusDisplay.GetText(status)</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <span class="@(task.Status == TodoStatus.Completed ? "text-muted" : "")">@task.Name</span>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm task-sprint-select" data-task-id="@task.Id">
+                                <option value="">No Sprint</option>
+                                @foreach (var sprint in sprints)
+                                {
+                                    <option value="@sprint.Id" selected="@(task.SprintId == sprint.Id ? "selected" : null)">@sprint.Name</option>
+                                }
+                            </select>
+                        </td>
+                        <td>@task.CreatedAt.ToString("MMM d, yyyy")</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary edit-task-btn"
+                                        data-id="@task.Id"
+                                        data-name="@task.Name"
+                                        data-status="@((int)task.Status)"
+                                        data-sprint-id="@task.SprintId">
+                                    Edit
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger delete-task-btn" data-id="@task.Id" data-name="@task.Name">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<partial name="_AddTaskModal" />
+<partial name="_EditTaskModal" />
+<partial name="_DeleteTaskModal" />
+
+@section Scripts {
+    <script src="~/js/tasks-index.js" asp-append-version="true"></script>
+}

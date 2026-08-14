@@ -1,0 +1,15 @@
+@model List<TodoTaskDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var sprint = (SprintDto)ViewBag.Sprint;
+    ViewData["Title"] = $"Details - {sprint.Name}";
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<input type="hidden" id="sprintDetailsAntiForgeryToken" value="@antiForgeryToken" />
+
+<partial name="_SprintDetailContent" model="Model" />
+
+@section Scripts {
+    <script src="~/js/sprint-details.js" asp-append-version="true"></script>
+}

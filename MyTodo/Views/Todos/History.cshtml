@@ -1,0 +1,80 @@
+@model List<TodoDto>
+@{
+    ViewData["Title"] = "Todo History";
+    var objectives = (List<ObjectiveDto>)ViewBag.Objectives;
+    int? selectedObjectiveId = ViewBag.SelectedObjectiveId;
+    DateOnly? selectedDate = ViewBag.SelectedDate;
+    string? selectedWeek = ViewBag.SelectedWeek;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Todo History</h1>
+    <a asp-controller="Todos" asp-action="Index" class="btn btn-secondary">Back to Today</a>
+</div>
+
+<form method="get" asp-controller="Todos" asp-action="History" class="row row-cols-lg-auto g-2 align-items-end mb-4">
+    <div class="col-12">
+        <label for="historyObjectiveId" class="form-label">Objective</label>
+        <select id="historyObjectiveId" name="objectiveId" class="form-select">
+            <option value="">All Objectives</option>
+            @foreach (var objective in objectives)
+            {
+                <option value="@objective.Id" selected="@(selectedObjectiveId == objective.Id ? "selected" : null)">@objective.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-12">
+        <label for="historyDate" class="form-label">Date</label>
+        <input type="date" id="historyDate" name="date" class="form-control" value="@(selectedDate?.ToString("yyyy-MM-dd"))" />
+    </div>
+    <div class="col-12">
+        <label for="historyWeek" class="form-label">Week</label>
+        <input type="week" id="historyWeek" name="week" class="form-control" value="@selectedWeek" />
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a asp-controller="Todos" asp-action="History" class="btn btn-outline-secondary">Clear Filters</a>
+    </div>
+    <div class="col-12">
+        <small class="text-muted">Picking a week overrides the date field.</small>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        No todo history matches the selected filters.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Task</th>
+                    <th>Objective</th>
+                    <th>Sprint</th>
+                    <th>Status</th>
+                    <th>Completed At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var todo in Model)
+                {
+                    <tr>
+                        <td>@todo.TodoDate.ToString("ddd, dd-MMM-yyyy")</td>
+                        <td>@todo.TodoTaskName</td>
+                        <td>
+                            <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@todo.ObjectiveId">@todo.ObjectiveText</a>
+                        </td>
+                        <td>@(todo.SprintName ?? "—")</td>
+                        <td><span class="badge @TodoStatusDisplay.GetBadgeClass(todo.TaskStatus)">@TodoStatusDisplay.GetText(todo.TaskStatus)</span></td>
+                        <td>@(todo.CompletedAt?.ToString("MMM d, yyyy") ?? "—")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

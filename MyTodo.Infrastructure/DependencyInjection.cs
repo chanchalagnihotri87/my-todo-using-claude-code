@@ -19,6 +19,10 @@ namespace MyTodo.Infrastructure
             services.AddScoped<IProblemStatusOrderRepository, ProblemStatusOrderRepository>();
             services.AddScoped<ISolutionRepository, SolutionRepository>();
             services.AddScoped<IObjectiveRepository, ObjectiveRepository>();
+            services.AddScoped<ITodoTaskRepository, TodoTaskRepository>();
+            services.AddScoped<IExperimentRepository, ExperimentRepository>();
+            services.AddScoped<ISprintRepository, SprintRepository>();
+            services.AddScoped<ITodoRepository, TodoRepository>();
 
             return services;
         }
