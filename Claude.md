@@ -23,6 +23,19 @@ The application allows users to create, read, update, and delete tasks, set remi
 - Use meaningful names for variables, methods, and classes to improve code readability.
 - Use async/await for asynchronous operations to improve performance and responsiveness.
 
+## Logging Standards
+
+### 1. Use Microsoft.Extensions.Logging
+
+Use the built-in `ILogger<T>` abstraction.
+
+```csharp
+private readonly ILogger<HomeController> _logger;
+
+public HomeController(ILogger<HomeController> logger)
+{
+    _logger = logger;
+}
 
 ## Commands
 - `dotnet build` : Build the application
@@ -34,3 +47,5 @@ The application allows users to create, read, update, and delete tasks, set remi
 ## Don'ts
 - Don't modify `Migrations` folder manually. Use EF Core commands to manage migrations.
 - Don't add nuget packages without asking.
+
+

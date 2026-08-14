@@ -1,7 +1,18 @@
 using MyTodo.Application;
 using MyTodo.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .WriteTo.File(
+            path: "Logs/log-.txt",
+            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: 30);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -30,6 +41,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=LifeAreas}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

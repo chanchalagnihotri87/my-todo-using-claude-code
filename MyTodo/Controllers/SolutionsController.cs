@@ -10,11 +10,13 @@ namespace MyTodo.Controllers
     {
         private readonly ISolutionService _solutionService;
         private readonly IProblemService _problemService;
+        private readonly ILogger<SolutionsController> _logger;
 
-        public SolutionsController(ISolutionService solutionService, IProblemService problemService)
+        public SolutionsController(ISolutionService solutionService, IProblemService problemService, ILogger<SolutionsController> logger)
         {
             _solutionService = solutionService;
             _problemService = problemService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int problemId)
@@ -22,6 +24,7 @@ namespace MyTodo.Controllers
             var problem = await _problemService.GetByIdAsync(problemId);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when loading solutions index", problemId);
                 return NotFound();
             }
 
@@ -36,6 +39,7 @@ namespace MyTodo.Controllers
             var solution = await _solutionService.GetByIdAsync(id);
             if (solution == null)
             {
+                _logger.LogWarning("Solution {SolutionId} not found when loading details", id);
                 return NotFound();
             }
 
@@ -47,6 +51,7 @@ namespace MyTodo.Controllers
             var problem = await _problemService.GetByIdAsync(problemId);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when loading create solution page", problemId);
                 return NotFound();
             }
 
@@ -62,6 +67,7 @@ namespace MyTodo.Controllers
             var problem = await _problemService.GetByIdAsync(model.ProblemId);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when creating solution", model.ProblemId);
                 return NotFound();
             }
 
@@ -80,6 +86,7 @@ namespace MyTodo.Controllers
             };
 
             await _solutionService.CreateAsync(createSolutionDto);
+            _logger.LogInformation("Created solution {SolutionName} for problem {ProblemId}", model.Name, model.ProblemId);
 
             return RedirectToAction(nameof(Index), new { problemId = model.ProblemId });
         }
@@ -90,15 +97,18 @@ namespace MyTodo.Controllers
         {
             if (!Enum.TryParse<SolutionStatus>(request.Status, out var status))
             {
+                _logger.LogWarning("Invalid status {Status} when reordering solution {SolutionId}", request.Status, request.Id);
                 return BadRequest();
             }
 
             var updated = await _solutionService.ReorderAsync(request.Id, status, request.OrderedIds);
             if (!updated)
             {
+                _logger.LogWarning("Solution {SolutionId} not found when reordering", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Reordered solution {SolutionId} to status {Status}", request.Id, status);
             return Ok();
         }
 
@@ -109,9 +119,11 @@ namespace MyTodo.Controllers
             var updated = await _solutionService.ReorderTwentyPercentAsync(request.Id, request.IsTwentyPercent, request.OrderedIds);
             if (!updated)
             {
+                _logger.LogWarning("Solution {SolutionId} not found when reordering focus", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Reordered focus for solution {SolutionId}", request.Id);
             return Ok();
         }
     }

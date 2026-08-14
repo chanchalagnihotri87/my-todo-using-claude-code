@@ -9,11 +9,13 @@ namespace MyTodo.Controllers
     {
         private readonly ITodoService _todoService;
         private readonly IObjectiveService _objectiveService;
+        private readonly ILogger<TodosController> _logger;
 
-        public TodosController(ITodoService todoService, IObjectiveService objectiveService)
+        public TodosController(ITodoService todoService, IObjectiveService objectiveService, ILogger<TodosController> logger)
         {
             _todoService = todoService;
             _objectiveService = objectiveService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -50,9 +52,11 @@ namespace MyTodo.Controllers
             var updated = await _todoService.ToggleUrgentAsync(request.Id);
             if (updated == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found when toggling urgent", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Toggled urgent to {IsUrgent} for todo {TodoId}", updated.IsUrgent, request.Id);
             return Json(new { isUrgent = updated.IsUrgent });
         }
 
@@ -63,9 +67,11 @@ namespace MyTodo.Controllers
             var updated = await _todoService.ToggleImportantAsync(request.Id);
             if (updated == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found when toggling important", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Toggled important to {IsImportant} for todo {TodoId}", updated.IsImportant, request.Id);
             return Json(new { isImportant = updated.IsImportant });
         }
 
@@ -76,9 +82,11 @@ namespace MyTodo.Controllers
             var updated = await _todoService.ToggleFrogAsync(request.Id);
             if (updated == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found when toggling frog", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Toggled frog to {IsFrog} for todo {TodoId}", updated.IsFrog, request.Id);
             return Json(new { isFrog = updated.IsFrog });
         }
 

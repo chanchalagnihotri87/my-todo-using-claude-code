@@ -9,11 +9,13 @@ namespace MyTodo.Controllers
     {
         private readonly ISprintService _sprintService;
         private readonly ITodoTaskService _todoTaskService;
+        private readonly ILogger<SprintsController> _logger;
 
-        public SprintsController(ISprintService sprintService, ITodoTaskService todoTaskService)
+        public SprintsController(ISprintService sprintService, ITodoTaskService todoTaskService, ILogger<SprintsController> logger)
         {
             _sprintService = sprintService;
             _todoTaskService = todoTaskService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -41,6 +43,7 @@ namespace MyTodo.Controllers
             var sprint = await _sprintService.GetByIdAsync(id);
             if (sprint == null)
             {
+                _logger.LogWarning("Sprint {SprintId} not found when loading details", id);
                 return NotFound();
             }
 
@@ -55,6 +58,7 @@ namespace MyTodo.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state when creating sprint");
                 return BadRequest();
             }
 
@@ -67,6 +71,7 @@ namespace MyTodo.Controllers
             };
 
             await _sprintService.CreateAsync(createSprintDto);
+            _logger.LogInformation("Created sprint {SprintName}", model.Name);
 
             return Ok();
         }
@@ -77,6 +82,7 @@ namespace MyTodo.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
             {
+                _logger.LogWarning("Invalid name when editing sprint {SprintId}", request.Id);
                 return BadRequest();
             }
 
@@ -92,9 +98,11 @@ namespace MyTodo.Controllers
             var updated = await _sprintService.UpdateAsync(updateSprintDto);
             if (updated == null)
             {
+                _logger.LogWarning("Sprint {SprintId} not found when editing", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated sprint {SprintId}", request.Id);
             return Ok();
         }
 
@@ -105,9 +113,11 @@ namespace MyTodo.Controllers
             var deleted = await _sprintService.DeleteAsync(request.Id);
             if (!deleted)
             {
+                _logger.LogWarning("Sprint {SprintId} not found when deleting", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Deleted sprint {SprintId}", request.Id);
             return Ok();
         }
     }

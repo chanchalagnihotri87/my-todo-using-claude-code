@@ -24,7 +24,8 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasConversion<string>()
                 .HasMaxLength(20)
-                .HasDefaultValue(ExperimentStatus.Innovation);
+                .HasDefaultValue(ExperimentStatus.Innovation)
+                .HasSentinel(ExperimentStatus.Innovation);
 
             builder.Property(x => x.SortOrder)
                 .IsRequired()

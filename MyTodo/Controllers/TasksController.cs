@@ -11,13 +11,15 @@ namespace MyTodo.Controllers
         private readonly IObjectiveService _objectiveService;
         private readonly ISprintService _sprintService;
         private readonly ITodoService _todoService;
+        private readonly ILogger<TasksController> _logger;
 
-        public TasksController(ITodoTaskService todoTaskService, IObjectiveService objectiveService, ISprintService sprintService, ITodoService todoService)
+        public TasksController(ITodoTaskService todoTaskService, IObjectiveService objectiveService, ISprintService sprintService, ITodoService todoService, ILogger<TasksController> logger)
         {
             _todoTaskService = todoTaskService;
             _objectiveService = objectiveService;
             _sprintService = sprintService;
             _todoService = todoService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int objectiveId)
@@ -25,6 +27,7 @@ namespace MyTodo.Controllers
             var objective = await _objectiveService.GetByIdAsync(objectiveId);
             if (objective == null)
             {
+                _logger.LogWarning("Objective {ObjectiveId} not found when loading tasks index", objectiveId);
                 return NotFound();
             }
 
@@ -32,6 +35,7 @@ namespace MyTodo.Controllers
             ViewBag.Sprints = await _sprintService.GetAllAsync();
 
             var tasks = await _todoTaskService.GetByObjectiveIdAsync(objectiveId);
+            _logger.LogInformation("Loaded {TaskCount} tasks for objective {ObjectiveId}", tasks.Count(), objectiveId);
             return View(tasks);
         }
 
@@ -41,6 +45,7 @@ namespace MyTodo.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state when creating task for objective {ObjectiveId}", model?.ObjectiveId);
                 return BadRequest();
             }
 
@@ -51,6 +56,7 @@ namespace MyTodo.Controllers
             };
 
             await _todoTaskService.CreateAsync(createTodoTaskDto);
+            _logger.LogInformation("Created task {TaskName} for objective {ObjectiveId}", model.Name, model.ObjectiveId);
 
             return Ok();
         }
@@ -61,6 +67,7 @@ namespace MyTodo.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
             {
+                _logger.LogWarning("Invalid name when editing task {TaskId}", request.Id);
                 return BadRequest();
             }
 
@@ -75,9 +82,11 @@ namespace MyTodo.Controllers
             var updated = await _todoTaskService.UpdateAsync(updateTodoTaskDto);
             if (updated == null)
             {
+                _logger.LogWarning("Task {TaskId} not found when editing", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated task {TaskId}", request.Id);
             return Ok();
         }
 
@@ -88,9 +97,11 @@ namespace MyTodo.Controllers
             var updated = await _todoTaskService.UpdateStatusAsync(request.Id, request.Status);
             if (updated == null)
             {
+                _logger.LogWarning("Task {TaskId} not found when updating status to {Status}", request.Id, request.Status);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated task {TaskId} status to {Status}", request.Id, request.Status);
             return Ok(updated);
         }
 
@@ -101,9 +112,11 @@ namespace MyTodo.Controllers
             var updated = await _todoTaskService.UpdateSprintAsync(request.Id, request.SprintId);
             if (!updated)
             {
+                _logger.LogWarning("Task {TaskId} not found when updating sprint to {SprintId}", request.Id, request.SprintId);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated task {TaskId} sprint to {SprintId}", request.Id, request.SprintId);
             return Ok();
         }
 
@@ -112,6 +125,7 @@ namespace MyTodo.Controllers
         public async Task<IActionResult> AddToTodo([FromBody] AddToTodoRequest request)
         {
             var todo = await _todoService.AddToTodoAsync(request.Id);
+            _logger.LogInformation("Added task {TaskId} to todo", request.Id);
             return Ok(todo);
         }
 
@@ -122,9 +136,11 @@ namespace MyTodo.Controllers
             var updated = await _todoService.UpdateDateAsync(request.Id, request.TodoDate);
             if (updated == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found when updating date to {TodoDate}", request.Id, request.TodoDate);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated todo {TodoId} date to {TodoDate}", request.Id, request.TodoDate);
             return Ok(updated);
         }
 
@@ -135,9 +151,11 @@ namespace MyTodo.Controllers
             var deleted = await _todoTaskService.DeleteAsync(request.Id);
             if (!deleted)
             {
+                _logger.LogWarning("Task {TaskId} not found when deleting", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Deleted task {TaskId}", request.Id);
             return Ok();
         }
     }

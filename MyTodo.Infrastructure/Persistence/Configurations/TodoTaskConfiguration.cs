@@ -21,7 +21,8 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasConversion<string>()
                 .HasMaxLength(20)
-                .HasDefaultValue(TodoStatus.Pending);
+                .HasDefaultValue(TodoStatus.Pending)
+                .HasSentinel(TodoStatus.Pending);
 
             builder.Property(x => x.CreatedAt)
                 .IsRequired();

@@ -11,12 +11,14 @@ namespace MyTodo.Controllers
         private readonly IProblemService _problemService;
         private readonly ILifeAreaService _lifeAreaService;
         private readonly IProblemStatusOrderService _problemStatusOrderService;
+        private readonly ILogger<ProblemsController> _logger;
 
-        public ProblemsController(IProblemService problemService, ILifeAreaService lifeAreaService, IProblemStatusOrderService problemStatusOrderService)
+        public ProblemsController(IProblemService problemService, ILifeAreaService lifeAreaService, IProblemStatusOrderService problemStatusOrderService, ILogger<ProblemsController> logger)
         {
             _problemService = problemService;
             _lifeAreaService = lifeAreaService;
             _problemStatusOrderService = problemStatusOrderService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int lifeAreaId)
@@ -24,6 +26,7 @@ namespace MyTodo.Controllers
             var lifeArea = await _lifeAreaService.GetByIdAsync(lifeAreaId);
             if (lifeArea == null)
             {
+                _logger.LogWarning("Life area {LifeAreaId} not found when loading problems index", lifeAreaId);
                 return NotFound();
             }
 
@@ -39,6 +42,7 @@ namespace MyTodo.Controllers
             var lifeArea = await _lifeAreaService.GetByIdAsync(lifeAreaId);
             if (lifeArea == null)
             {
+                _logger.LogWarning("Life area {LifeAreaId} not found when loading create problem page", lifeAreaId);
                 return NotFound();
             }
 
@@ -54,6 +58,7 @@ namespace MyTodo.Controllers
             var lifeArea = await _lifeAreaService.GetByIdAsync(model.LifeAreaId);
             if (lifeArea == null)
             {
+                _logger.LogWarning("Life area {LifeAreaId} not found when creating problem", model.LifeAreaId);
                 return NotFound();
             }
 
@@ -71,6 +76,7 @@ namespace MyTodo.Controllers
             };
 
             await _problemService.CreateAsync(createProblemDto);
+            _logger.LogInformation("Created problem {ProblemName} for life area {LifeAreaId}", model.Name, model.LifeAreaId);
 
             return RedirectToAction(nameof(Index), new { lifeAreaId = model.LifeAreaId });
         }
@@ -81,11 +87,13 @@ namespace MyTodo.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
             {
+                _logger.LogWarning("Invalid name when editing problem {ProblemId}", request.Id);
                 return BadRequest();
             }
 
             if (!Enum.TryParse<ProblemStatus>(request.Status, out var status))
             {
+                _logger.LogWarning("Invalid status {Status} when editing problem {ProblemId}", request.Status, request.Id);
                 return BadRequest();
             }
 
@@ -102,9 +110,11 @@ namespace MyTodo.Controllers
             var updated = await _problemService.UpdateAsync(updateProblemDto);
             if (updated == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when editing", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated problem {ProblemId}", request.Id);
             return Ok();
         }
 
@@ -115,9 +125,11 @@ namespace MyTodo.Controllers
             var deleted = await _problemService.DeleteAsync(request.Id);
             if (!deleted)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when deleting", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Deleted problem {ProblemId}", request.Id);
             return Ok();
         }
 
@@ -127,15 +139,18 @@ namespace MyTodo.Controllers
         {
             if (!Enum.TryParse<ProblemStatus>(request.Status, out var status))
             {
+                _logger.LogWarning("Invalid status {Status} when updating problem {ProblemId} status", request.Status, request.Id);
                 return BadRequest();
             }
 
             var updated = await _problemService.UpdateStatusAsync(request.Id, status);
             if (updated == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when updating status to {Status}", request.Id, status);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated problem {ProblemId} status to {Status}", request.Id, status);
             return Ok();
         }
 
@@ -148,12 +163,14 @@ namespace MyTodo.Controllers
             {
                 if (!Enum.TryParse<ProblemStatus>(value, out var status))
                 {
+                    _logger.LogWarning("Invalid status {Status} when reordering problem lists", value);
                     return BadRequest();
                 }
                 statuses.Add(status);
             }
 
             await _problemStatusOrderService.ReorderAsync(statuses);
+            _logger.LogInformation("Reordered problem status lists");
             return Ok();
         }
 
@@ -164,9 +181,11 @@ namespace MyTodo.Controllers
             var updated = await _problemService.ToggleUrgentAsync(request.Id);
             if (updated == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when toggling urgent", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Toggled urgent to {IsUrgent} for problem {ProblemId}", updated.IsUrgent, request.Id);
             return Json(new { isUrgent = updated.IsUrgent });
         }
 
@@ -177,9 +196,11 @@ namespace MyTodo.Controllers
             var updated = await _problemService.ToggleImportantAsync(request.Id);
             if (updated == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found when toggling important", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Toggled important to {IsImportant} for problem {ProblemId}", updated.IsImportant, request.Id);
             return Json(new { isImportant = updated.IsImportant });
         }
     }

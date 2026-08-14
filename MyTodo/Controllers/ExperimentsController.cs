@@ -10,11 +10,13 @@ namespace MyTodo.Controllers
     {
         private readonly IExperimentService _experimentService;
         private readonly ISolutionService _solutionService;
+        private readonly ILogger<ExperimentsController> _logger;
 
-        public ExperimentsController(IExperimentService experimentService, ISolutionService solutionService)
+        public ExperimentsController(IExperimentService experimentService, ISolutionService solutionService, ILogger<ExperimentsController> logger)
         {
             _experimentService = experimentService;
             _solutionService = solutionService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(int solutionId)
@@ -22,6 +24,7 @@ namespace MyTodo.Controllers
             var solution = await _solutionService.GetByIdAsync(solutionId);
             if (solution == null)
             {
+                _logger.LogWarning("Solution {SolutionId} not found when loading experiments index", solutionId);
                 return NotFound();
             }
 
@@ -37,6 +40,7 @@ namespace MyTodo.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state when creating experiment for solution {SolutionId}", model?.SolutionId);
                 return BadRequest();
             }
 
@@ -48,6 +52,7 @@ namespace MyTodo.Controllers
             };
 
             await _experimentService.CreateAsync(createExperimentDto);
+            _logger.LogInformation("Created experiment {ExperimentName} for solution {SolutionId}", model.Name, model.SolutionId);
 
             return Ok();
         }
@@ -58,11 +63,13 @@ namespace MyTodo.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
             {
+                _logger.LogWarning("Invalid name when editing experiment {ExperimentId}", request.Id);
                 return BadRequest();
             }
 
             if (!Enum.TryParse<ExperimentStatus>(request.Status, out var status))
             {
+                _logger.LogWarning("Invalid status {Status} when editing experiment {ExperimentId}", request.Status, request.Id);
                 return BadRequest();
             }
 
@@ -77,9 +84,11 @@ namespace MyTodo.Controllers
             var updated = await _experimentService.UpdateAsync(updateExperimentDto);
             if (updated == null)
             {
+                _logger.LogWarning("Experiment {ExperimentId} not found when editing", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated experiment {ExperimentId}", request.Id);
             return Ok();
         }
 
@@ -89,15 +98,18 @@ namespace MyTodo.Controllers
         {
             if (!Enum.TryParse<ExperimentStatus>(request.Status, out var status))
             {
+                _logger.LogWarning("Invalid status {Status} when reordering experiment {ExperimentId}", request.Status, request.Id);
                 return BadRequest();
             }
 
             var updated = await _experimentService.ReorderAsync(request.Id, status, request.OrderedIds);
             if (!updated)
             {
+                _logger.LogWarning("Experiment {ExperimentId} not found when reordering", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Reordered experiment {ExperimentId} to status {Status}", request.Id, status);
             return Ok();
         }
 
@@ -108,9 +120,11 @@ namespace MyTodo.Controllers
             var deleted = await _experimentService.DeleteAsync(request.Id);
             if (!deleted)
             {
+                _logger.LogWarning("Experiment {ExperimentId} not found when deleting", request.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Deleted experiment {ExperimentId}", request.Id);
             return Ok();
         }
     }

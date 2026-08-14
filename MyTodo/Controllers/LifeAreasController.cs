@@ -8,10 +8,12 @@ namespace MyTodo.Controllers
     public class LifeAreasController : Controller
     {
         private readonly ILifeAreaService _lifeAreaService;
+        private readonly ILogger<LifeAreasController> _logger;
 
-        public LifeAreasController(ILifeAreaService lifeAreaService)
+        public LifeAreasController(ILifeAreaService lifeAreaService, ILogger<LifeAreasController> logger)
         {
             _lifeAreaService = lifeAreaService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -41,6 +43,7 @@ namespace MyTodo.Controllers
             };
 
             await _lifeAreaService.CreateAsync(createLifeAreaDto);
+            _logger.LogInformation("Created life area {LifeAreaName}", model.Name);
 
             return RedirectToAction(nameof(Index));
         }
@@ -50,6 +53,7 @@ namespace MyTodo.Controllers
             var lifeArea = await _lifeAreaService.GetByIdAsync(id);
             if (lifeArea == null)
             {
+                _logger.LogWarning("Life area {LifeAreaId} not found when loading edit page", id);
                 return NotFound();
             }
 
@@ -82,9 +86,11 @@ namespace MyTodo.Controllers
             var updated = await _lifeAreaService.UpdateAsync(updateLifeAreaDto);
             if (updated == null)
             {
+                _logger.LogWarning("Life area {LifeAreaId} not found when editing", model.Id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Updated life area {LifeAreaId}", model.Id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -95,9 +101,11 @@ namespace MyTodo.Controllers
             var deleted = await _lifeAreaService.DeleteAsync(id);
             if (!deleted)
             {
+                _logger.LogWarning("Life area {LifeAreaId} not found when deleting", id);
                 return NotFound();
             }
 
+            _logger.LogInformation("Deleted life area {LifeAreaId}", id);
             return RedirectToAction(nameof(Index));
         }
     }
