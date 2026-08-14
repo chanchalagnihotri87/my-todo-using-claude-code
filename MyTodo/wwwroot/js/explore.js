@@ -1,10 +1,9 @@
 function loadTreeChildren($children) {
-    $children.html('<p class="text-muted small tree-loading mb-0">Loading…</p>');
+    $children.html('<p class="text-muted small tree-loading mb-0"><span class="tree-spinner" aria-hidden="true"></span>Loading…</p>');
 
     $.get($children.data('url'))
         .done(function (html) {
             $children.html(html);
-            $children.data('loaded', true);
         })
         .fail(function () {
             $children.html('<p class="tree-load-error mb-0" role="button">Could not load. Click to retry.</p>');
@@ -34,10 +33,7 @@ $(function () {
 
         $header.addClass('expanded').attr('aria-expanded', 'true');
         $children.removeClass('d-none');
-
-        if (!$children.data('loaded')) {
-            loadTreeChildren($children);
-        }
+        loadTreeChildren($children);
     });
 
     $(document).on('click', '.tree-load-error', function () {
