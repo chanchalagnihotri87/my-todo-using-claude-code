@@ -20,7 +20,7 @@ else
                             <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
                         </div>
                         <div class="col-2 tree-actions">
-                            <a class="tree-manage-link btn btn-sm btn-outline-secondary py-0 px-2" asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@objective.SolutionId" title="Manage">&rarr;</a>
+                            <a class="tree-manage-link btn btn-sm btn-outline-secondary py-0 px-2" asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@objective.SolutionId" target="_blank" rel="noopener" title="Manage">&rarr;</a>
                             <span class="tree-arrow"></span>
                         </div>
                     </div>

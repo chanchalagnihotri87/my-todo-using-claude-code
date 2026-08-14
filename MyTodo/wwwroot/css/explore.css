@@ -77,7 +77,7 @@
 
 .tree-type-label {
     display: inline-block;
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -133,15 +133,16 @@
 .tree-children {
     margin-left: 1.75rem;
     margin-top: 0.5rem;
-    padding-left: 0.75rem;
-    border-left: 1px dashed var(--bs-border-color, #dee2e6);
+    padding: 0.75rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    background-color: rgba(0, 0, 0, 0.015);
 }
 
-.tree-empty,
-.tree-loading,
-.tree-load-error {
-    margin-left: 1.75rem;
+.tree-children .tree-node:last-child {
+    margin-bottom: 0;
 }
+
 
 .tree-load-error {
     color: var(--bs-danger, #dc3545);
