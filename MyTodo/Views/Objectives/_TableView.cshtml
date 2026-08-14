@@ -7,7 +7,6 @@
                 <th>Text</th>
                 <th>Status</th>
                 <th>Focus</th>
-                <th>Created</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -20,19 +19,18 @@
                     </td>
                     <td><span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span></td>
                     <td>
-                        <span class="badge bg-warning text-dark twenty-percent-badge @(objective.IsTwentyPercent ? "" : "d-none")">20%</span>
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle twenty-percent-badge @(objective.IsTwentyPercent ? "" : "d-none")">20%</span>
                     </td>
-                    <td>@objective.CreatedAt.ToString("MMM d, yyyy")</td>
                     <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@objective.Id" class="btn btn-sm btn-outline-primary">Tasks</a>
+                        <div class="btn-group">
+                            <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@objective.Id" class="btn btn-sm btn-outline-secondary">Detail</a>
                             <button type="button" class="btn btn-sm btn-outline-secondary edit-objective-btn"
                                     data-id="@objective.Id"
                                     data-text="@objective.Text"
                                     data-status="@objective.Status">
                                 Edit
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger objective-delete" data-objective-id="@objective.Id" data-text="@objective.Text" aria-label="Delete objective">Delete</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary objective-delete" data-objective-id="@objective.Id" data-text="@objective.Text" aria-label="Delete objective">Delete</button>
                         </div>
                     </td>
                 </tr>

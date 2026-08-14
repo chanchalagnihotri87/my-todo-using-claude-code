@@ -7,7 +7,6 @@
                 <th>Name</th>
                 <th>Status</th>
                 <th>Description</th>
-                <th>Created</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -18,9 +17,8 @@
                     <td>@experiment.Name</td>
                     <td><span class="badge @ExperimentStatusDisplay.GetBadgeClass(experiment.Status)">@ExperimentStatusDisplay.GetText(experiment.Status)</span></td>
                     <td>@(string.IsNullOrWhiteSpace(experiment.Description) ? "No description provided." : experiment.Description)</td>
-                    <td>@experiment.CreatedAt.ToString("MMM d, yyyy")</td>
                     <td>
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-outline-secondary edit-experiment-btn"
                                     data-id="@experiment.Id"
                                     data-name="@experiment.Name"
@@ -28,7 +26,7 @@
                                     data-status="@experiment.Status">
                                 Edit
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger delete-experiment-btn" data-id="@experiment.Id" data-name="@experiment.Name">
+                            <button type="button" class="btn btn-sm btn-outline-secondary delete-experiment-btn" data-id="@experiment.Id" data-name="@experiment.Name">
                                 Delete
                             </button>
                         </div>

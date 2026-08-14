@@ -19,7 +19,10 @@
                         <span class="@(todo.TaskStatus == TodoStatus.Completed ? "text-muted" : "")">@todo.TodoTaskName</span>
                     </td>
                     <td>
-                        <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@todo.ObjectiveId">@todo.ObjectiveText</a>
+                        <div class="d-flex align-items-center gap-2">
+                            <span>@todo.ObjectiveText</span>
+                            <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@todo.ObjectiveId" class="btn btn-sm btn-outline-secondary py-0 px-2" title="View Tasks">&rarr;</a>
+                        </div>
                     </td>
                     <td>@(todo.SprintName ?? "—")</td>
                     <td><partial name="_TodoTagBadges" model="todo" /></td>

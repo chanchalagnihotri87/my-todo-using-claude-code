@@ -4,16 +4,7 @@ namespace MyTodo.Helpers
 {
     public static class SolutionStatusDisplay
     {
-        public static string GetBadgeClass(SolutionStatus status) => status switch
-        {
-            SolutionStatus.Planned => "bg-secondary",
-            SolutionStatus.Verifying => "bg-warning text-dark",
-            SolutionStatus.Verified => "bg-info text-dark",
-            SolutionStatus.AddedInRoutine => "bg-primary",
-            SolutionStatus.BecomeSecondNature => "bg-success",
-            SolutionStatus.Discarded => "bg-danger",
-            _ => "bg-secondary"
-        };
+        public static string GetBadgeClass(SolutionStatus status) => "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle";
 
         public static string GetText(SolutionStatus status) => status switch
         {

@@ -11,18 +11,29 @@ else
         {
             <div class="tree-node">
                 <div class="tree-node-header" role="button" aria-expanded="false">
-                    <span class="tree-node-label">@problem.Name</span>
-                    <span class="badge @ProblemStatusDisplay.GetBadgeClass(problem.Status)">@ProblemStatusDisplay.GetText(problem.Status)</span>
-                    @if (problem.IsUrgent)
-                    {
-                        <span class="badge bg-danger">Urgent</span>
-                    }
-                    @if (problem.IsImportant)
-                    {
-                        <span class="badge bg-primary">Important</span>
-                    }
-                    <a class="tree-manage-link" asp-controller="Problems" asp-action="Index" asp-route-lifeAreaId="@problem.LifeAreaId">Manage</a>
-                    <span class="tree-arrow"></span>
+                    <div class="row gx-2 align-items-center flex-nowrap">
+                        <div class="col-1 tree-type-label">Problem</div>
+                        <div class="col-4 tree-col-name">
+                            <span class="tree-node-label">@problem.Name</span>
+                        </div>
+                        <div class="col-2 tree-status-group">
+                            <span class="badge @ProblemStatusDisplay.GetBadgeClass(problem.Status)">@ProblemStatusDisplay.GetText(problem.Status)</span>
+                        </div>
+                        <div class="col-3 tree-status-group">
+                            @if (problem.IsUrgent)
+                            {
+                                <span class="badge bg-danger">Urgent</span>
+                            }
+                            @if (problem.IsImportant)
+                            {
+                                <span class="badge bg-primary">Important</span>
+                            }
+                        </div>
+                        <div class="col-2 tree-actions">
+                            <a class="tree-manage-link btn btn-sm btn-outline-secondary py-0 px-2" asp-controller="Problems" asp-action="Index" asp-route-lifeAreaId="@problem.LifeAreaId" title="Manage">&rarr;</a>
+                            <span class="tree-arrow"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="tree-children d-none" data-url="@Url.Action("Solutions", "Explore", new { problemId = problem.Id })"></div>
             </div>

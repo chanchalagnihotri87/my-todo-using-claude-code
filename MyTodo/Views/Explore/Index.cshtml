@@ -3,10 +3,11 @@
     ViewData["Title"] = "Explore";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-2">
     <h1>Explore</h1>
     <a asp-controller="LifeAreas" asp-action="Index" class="btn btn-secondary">Manage Life Areas</a>
 </div>
+<p class="text-muted small mb-4">Life Area &rarr; Problem &rarr; Solution &rarr; Objective &rarr; Task. Click a row to expand it.</p>
 
 @if (!Model.Any())
 {
@@ -21,8 +22,16 @@ else
         {
             <div class="tree-node">
                 <div class="tree-node-header" role="button" aria-expanded="false">
-                    <span class="tree-node-label">@lifeArea.Name</span>
-                    <span class="tree-arrow"></span>
+                    <div class="row gx-2 align-items-center flex-nowrap">
+                        <div class="col-1 tree-type-label">Life Area</div>
+                        <div class="col-4 tree-col-name">
+                            <span class="tree-node-label">@lifeArea.Name</span>
+                        </div>
+                        <div class="col-5 tree-status-group"></div>
+                        <div class="col-2 tree-actions">
+                            <span class="tree-arrow"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="tree-children d-none" data-url="@Url.Action("Problems", "Explore", new { lifeAreaId = lifeArea.Id })"></div>
             </div>

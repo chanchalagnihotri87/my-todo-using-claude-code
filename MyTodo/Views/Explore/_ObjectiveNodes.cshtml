@@ -11,10 +11,19 @@ else
         {
             <div class="tree-node">
                 <div class="tree-node-header" role="button" aria-expanded="false">
-                    <span class="tree-node-label">@objective.Text</span>
-                    <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
-                    <a class="tree-manage-link" asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@objective.SolutionId">Manage</a>
-                    <span class="tree-arrow"></span>
+                    <div class="row gx-2 align-items-center flex-nowrap">
+                        <div class="col-1 tree-type-label">Objective</div>
+                        <div class="col-4 tree-col-name">
+                            <span class="tree-node-label">@objective.Text</span>
+                        </div>
+                        <div class="col-5 tree-status-group">
+                            <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
+                        </div>
+                        <div class="col-2 tree-actions">
+                            <a class="tree-manage-link btn btn-sm btn-outline-secondary py-0 px-2" asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@objective.SolutionId" title="Manage">&rarr;</a>
+                            <span class="tree-arrow"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="tree-children d-none" data-url="@Url.Action("Tasks", "Explore", new { objectiveId = objective.Id })"></div>
             </div>

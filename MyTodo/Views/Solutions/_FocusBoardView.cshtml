@@ -31,8 +31,10 @@
                                     <p class="card-text small text-muted mb-0 mb-2">
                                         @(string.IsNullOrWhiteSpace(solution.Description) ? "No description provided." : solution.Description)
                                     </p>
-                                    <span class="badge @SolutionStatusDisplay.GetBadgeClass(solution.Status)">@SolutionStatusDisplay.GetText(solution.Status)</span>
-                                    <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="badge @SolutionStatusDisplay.GetBadgeClass(solution.Status)">@SolutionStatusDisplay.GetText(solution.Status)</span>
+                                        <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-secondary py-0 px-2" title="View Details">&rarr;</a>
+                                    </div>
                                 </div>
                             </div>
                         }

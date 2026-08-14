@@ -11,11 +11,22 @@ else
         {
             <div class="tree-node">
                 <div class="tree-node-header" role="button" aria-expanded="false">
-                    <span class="tree-node-label">@solution.Name</span>
-                    <span class="badge @SolutionStatusDisplay.GetBadgeClass(solution.Status)">@SolutionStatusDisplay.GetText(solution.Status)</span>
-                    <span class="text-muted small">@solution.CompletedObjectivesCount/@solution.TotalObjectivesCount objectives</span>
-                    <a class="tree-manage-link" asp-controller="Solutions" asp-action="Index" asp-route-problemId="@solution.ProblemId">Manage</a>
-                    <span class="tree-arrow"></span>
+                    <div class="row gx-2 align-items-center flex-nowrap">
+                        <div class="col-1 tree-type-label">Solution</div>
+                        <div class="col-4 tree-col-name">
+                            <span class="tree-node-label">@solution.Name</span>
+                        </div>
+                        <div class="col-2 tree-status-group">
+                            <span class="badge @SolutionStatusDisplay.GetBadgeClass(solution.Status)">@SolutionStatusDisplay.GetText(solution.Status)</span>
+                        </div>
+                        <div class="col-3 tree-status-group">
+                            <span class="text-muted small">@solution.CompletedObjectivesCount/@solution.TotalObjectivesCount objectives</span>
+                        </div>
+                        <div class="col-2 tree-actions">
+                            <a class="tree-manage-link btn btn-sm btn-outline-secondary py-0 px-2" asp-controller="Solutions" asp-action="Index" asp-route-problemId="@solution.ProblemId" title="Manage">&rarr;</a>
+                            <span class="tree-arrow"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="tree-children d-none" data-url="@Url.Action("Objectives", "Explore", new { solutionId = solution.Id })"></div>
             </div>

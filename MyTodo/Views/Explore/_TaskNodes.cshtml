@@ -11,13 +11,23 @@ else
         {
             <div class="tree-node tree-leaf">
                 <div class="tree-node-header">
-                    <span class="tree-node-label">@task.Name</span>
-                    <span class="badge @TodoStatusDisplay.GetBadgeClass(task.Status)">@TodoStatusDisplay.GetText(task.Status)</span>
-                    @if (!string.IsNullOrWhiteSpace(task.SprintName))
-                    {
-                        <span class="text-muted small">@task.SprintName</span>
-                    }
-                    <a class="tree-manage-link" asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@task.ObjectiveId">Manage</a>
+                    <div class="row gx-2 align-items-center flex-nowrap">
+                        <div class="col-1 tree-type-label">Task</div>
+                        <div class="col-4 tree-col-name">
+                            <span class="tree-node-label">@task.Name</span>
+                        </div>
+                        <div class="col-5 tree-status-group">
+                            <span class="badge @TodoStatusDisplay.GetBadgeClass(task.Status)">@TodoStatusDisplay.GetText(task.Status)</span>
+                            @if (!string.IsNullOrWhiteSpace(task.SprintName))
+                            {
+                                <span class="text-muted small">@task.SprintName</span>
+                            }
+                        </div>
+                        <div class="col-2 tree-actions">
+                            <a class="tree-manage-link btn btn-sm btn-outline-secondary py-0 px-2" asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@task.ObjectiveId" title="Manage">&rarr;</a>
+                            <span class="tree-arrow tree-arrow-spacer" aria-hidden="true"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         }

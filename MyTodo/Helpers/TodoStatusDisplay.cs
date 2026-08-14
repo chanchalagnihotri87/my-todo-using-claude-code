@@ -4,13 +4,7 @@ namespace MyTodo.Helpers
 {
     public static class TodoStatusDisplay
     {
-        public static string GetBadgeClass(TodoStatus status) => status switch
-        {
-            TodoStatus.Pending => "bg-secondary",
-            TodoStatus.InProgress => "bg-info text-dark",
-            TodoStatus.Completed => "bg-success",
-            _ => "bg-secondary"
-        };
+        public static string GetBadgeClass(TodoStatus status) => "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle";
 
         public static string GetText(TodoStatus status) => status switch
         {

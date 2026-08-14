@@ -67,7 +67,10 @@ else
                         <td>@todo.TodoDate.ToString("ddd, dd-MMM-yyyy")</td>
                         <td>@todo.TodoTaskName</td>
                         <td>
-                            <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@todo.ObjectiveId">@todo.ObjectiveText</a>
+                            <div class="d-flex align-items-center gap-2">
+                                <span>@todo.ObjectiveText</span>
+                                <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@todo.ObjectiveId" class="btn btn-sm btn-outline-secondary py-0 px-2" title="View Tasks">&rarr;</a>
+                            </div>
                         </td>
                         <td>@(todo.SprintName ?? "—")</td>
                         <td><span class="badge @TodoStatusDisplay.GetBadgeClass(todo.TaskStatus)">@TodoStatusDisplay.GetText(todo.TaskStatus)</span></td>

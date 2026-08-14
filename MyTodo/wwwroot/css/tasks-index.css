@@ -1,0 +1,7 @@
+.btn-group > .btn-outline-secondary:not(:last-child) {
+    border-right-color: transparent;
+}
+
+.btn-group > .btn-outline-secondary:hover {
+    border-color: var(--bs-secondary);
+}

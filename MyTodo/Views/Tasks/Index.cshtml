@@ -36,7 +36,6 @@ else
                     <th>Status</th>
                     <th>Name</th>
                     <th>Sprint</th>
-                    <th>Created</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -64,9 +63,8 @@ else
                                 }
                             </select>
                         </td>
-                        <td>@task.CreatedAt.ToString("MMM d, yyyy")</td>
                         <td>
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-outline-secondary edit-task-btn"
                                         data-id="@task.Id"
                                         data-name="@task.Name"
@@ -74,7 +72,7 @@ else
                                         data-sprint-id="@task.SprintId">
                                     Edit
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger delete-task-btn" data-id="@task.Id" data-name="@task.Name">
+                                <button type="button" class="btn btn-sm btn-outline-secondary delete-task-btn" data-id="@task.Id" data-name="@task.Name">
                                     Delete
                                 </button>
                             </div>
@@ -89,6 +87,10 @@ else
 <partial name="_AddTaskModal" />
 <partial name="_EditTaskModal" />
 <partial name="_DeleteTaskModal" />
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tasks-index.css" asp-append-version="true" />
+}
 
 @section Scripts {
     <script src="~/js/tasks-index.js" asp-append-version="true"></script>

@@ -4,15 +4,7 @@ namespace MyTodo.Helpers
 {
     public static class ExperimentStatusDisplay
     {
-        public static string GetBadgeClass(ExperimentStatus status) => status switch
-        {
-            ExperimentStatus.Innovation => "bg-secondary",
-            ExperimentStatus.Verifying => "bg-info text-dark",
-            ExperimentStatus.Verified => "bg-primary",
-            ExperimentStatus.AddedInSOP => "bg-warning text-dark",
-            ExperimentStatus.Discarded => "bg-dark",
-            _ => "bg-secondary"
-        };
+        public static string GetBadgeClass(ExperimentStatus status) => "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle";
 
         public static string GetText(ExperimentStatus status) => status switch
         {

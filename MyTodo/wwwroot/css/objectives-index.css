@@ -14,3 +14,11 @@
     outline: 2px dashed var(--bs-primary);
     outline-offset: -2px;
 }
+
+.btn-group > .btn-outline-secondary:not(:last-child) {
+    border-right-color: transparent;
+}
+
+.btn-group > .btn-outline-secondary:hover {
+    border-color: var(--bs-secondary);
+}

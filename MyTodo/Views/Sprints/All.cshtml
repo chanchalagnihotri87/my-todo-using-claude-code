@@ -31,7 +31,6 @@ else
                     <th>Description</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Created</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -43,10 +42,9 @@ else
                         <td>@(string.IsNullOrWhiteSpace(sprint.Description) ? "No description provided." : sprint.Description)</td>
                         <td>@sprint.StartDate.ToString("MMM d, yyyy")</td>
                         <td>@sprint.EndDate.ToString("MMM d, yyyy")</td>
-                        <td>@sprint.CreatedAt.ToString("MMM d, yyyy")</td>
                         <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <a asp-controller="Sprints" asp-action="Details" asp-route-id="@sprint.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                            <div class="btn-group">
+                                <a asp-controller="Sprints" asp-action="Details" asp-route-id="@sprint.Id" class="btn btn-sm btn-outline-secondary">Detail</a>
                                 <button type="button" class="btn btn-sm btn-outline-secondary edit-sprint-btn"
                                         data-id="@sprint.Id"
                                         data-name="@sprint.Name"
@@ -55,7 +53,7 @@ else
                                         data-end-date="@sprint.EndDate.ToString("yyyy-MM-dd")">
                                     Edit
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger delete-sprint-btn" data-id="@sprint.Id" data-name="@sprint.Name">
+                                <button type="button" class="btn btn-sm btn-outline-secondary delete-sprint-btn" data-id="@sprint.Id" data-name="@sprint.Name">
                                     Delete
                                 </button>
                             </div>
@@ -70,6 +68,10 @@ else
 <partial name="_AddSprintModal" />
 <partial name="_EditSprintModal" />
 <partial name="_DeleteSprintModal" />
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/sprints-index.css" asp-append-version="true" />
+}
 
 @section Scripts {
     <script src="~/js/sprints-index.js" asp-append-version="true"></script>

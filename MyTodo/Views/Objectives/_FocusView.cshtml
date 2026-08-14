@@ -2,7 +2,7 @@
 @{
     var focusGroups = new[]
     {
-        (Key: true, Title: "20% (Focus)", BadgeClass: "bg-warning text-dark", GroupName: "twentyPercent"),
+        (Key: true, Title: "20% (Focus)", BadgeClass: "bg-secondary", GroupName: "twentyPercent"),
         (Key: false, Title: "Normal", BadgeClass: "bg-secondary", GroupName: "normal")
     };
 }
@@ -26,9 +26,12 @@
                         @foreach (var objective in objectivesInGroup)
                         {
                             <div class="card kanban-card mb-2 shadow-sm" draggable="true" data-objective-id="@objective.Id">
-                                <div class="card-body py-2 px-3 d-flex justify-content-between align-items-start gap-2">
+                                <div class="card-body py-2 px-3">
                                     <span class="@(objective.Status == ObjectiveStatus.Completed ? "text-muted" : "")">@objective.Text</span>
-                                    <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
+                                    <div class="d-flex align-items-center mt-2">
+                                        <span class="badge @ObjectiveStatusDisplay.GetBadgeClass(objective.Status)">@ObjectiveStatusDisplay.GetText(objective.Status)</span>
+                                        <a asp-controller="Tasks" asp-action="Index" asp-route-objectiveId="@objective.Id" class="btn btn-sm btn-outline-secondary py-0 px-2 ms-auto" title="View Details">&rarr;</a>
+                                    </div>
                                 </div>
                             </div>
                         }

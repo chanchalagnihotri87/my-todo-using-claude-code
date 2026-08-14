@@ -23,7 +23,7 @@
                     <td>@problem.CreatedAt.ToString("MMM d, yyyy")</td>
                     <td>
                         <div class="btn-group">
-                            <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-outline-primary">Solutions</a>
+                            <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-outline-secondary">Detail</a>
                             <button type="button" class="btn btn-sm btn-outline-secondary edit-problem-btn"
                                     data-id="@problem.Id"
                                     data-name="@problem.Name"
@@ -33,7 +33,7 @@
                                     data-is-important="@problem.IsImportant.ToString().ToLower()">
                                 Edit
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger delete-problem-btn"
+                            <button type="button" class="btn btn-sm btn-outline-secondary delete-problem-btn"
                                     data-id="@problem.Id"
                                     data-name="@problem.Name">
                                 Delete

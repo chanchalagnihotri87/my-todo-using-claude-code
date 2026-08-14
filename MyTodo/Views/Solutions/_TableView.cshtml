@@ -8,8 +8,7 @@
                 <th>Description</th>
                 <th>Status</th>
                 <th>20%</th>
-                <th>Objectives</th>
-                <th>Created</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -20,12 +19,11 @@
                     <td>@(string.IsNullOrWhiteSpace(solution.Description) ? "No description provided." : solution.Description)</td>
                     <td><span class="badge @SolutionStatusDisplay.GetBadgeClass(solution.Status)">@SolutionStatusDisplay.GetText(solution.Status)</span></td>
                     <td>
-                        <span class="badge bg-warning text-dark twenty-percent-badge @(solution.IsTwentyPercent ? "" : "d-none")">20%</span>
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle twenty-percent-badge @(solution.IsTwentyPercent ? "" : "d-none")">20%</span>
                     </td>
                     <td>
-                        <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                        <a asp-controller="Objectives" asp-action="Index" asp-route-solutionId="@solution.Id" class="btn btn-sm btn-outline-secondary">Detail</a>
                     </td>
-                    <td>@solution.CreatedAt.ToString("MMM d, yyyy")</td>
                 </tr>
             }
         </tbody>

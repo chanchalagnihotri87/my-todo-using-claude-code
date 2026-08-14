@@ -30,8 +30,10 @@
                                     <p class="card-text small text-muted mb-0 mb-2">
                                         @(string.IsNullOrWhiteSpace(problem.Description) ? "No description provided." : problem.Description)
                                     </p>
-                                    <partial name="_ProblemTagBadges" model="problem" />
-                                    <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-outline-primary mt-2">View Solutions</a>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <partial name="_ProblemTagBadges" model="problem" />
+                                        <a asp-controller="Solutions" asp-action="Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-outline-secondary py-0 px-2" title="View Details">&rarr;</a>
+                                    </div>
                                 </div>
                             </div>
                         }
