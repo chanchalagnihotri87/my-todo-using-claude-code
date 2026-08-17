@@ -8,5 +8,6 @@ namespace MyTodo.Application.Repository.Interface
         Task<List<Todo>> GetByDateAsync(DateOnly date);
         Task<Todo?> GetFrogByDateAsync(DateOnly date);
         Task<List<Todo>> GetHistoryAsync(int? objectiveId, DateOnly? fromDate, DateOnly? toDate);
+        Task<int> GetMaxSortOrderAsync(DateOnly date);
     }
 }

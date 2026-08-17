@@ -116,6 +116,199 @@ function initTodosKanbanDragAndDrop(antiForgeryToken) {
     });
 }
 
+function initTodosTableRowReorder(antiForgeryToken) {
+    var $tbody = $('#todosTableBody');
+    if ($tbody.length === 0) {
+        return;
+    }
+
+    var $draggedRow = null;
+    var originalOrder = [];
+
+    function getRowOrder() {
+        return $tbody.find('.todo-row').map(function () {
+            return $(this).data('todo-id');
+        }).get();
+    }
+
+    $tbody.on('dragstart', '.todo-row', function (e) {
+        $draggedRow = $(this);
+        originalOrder = getRowOrder();
+        $draggedRow.addClass('dragging');
+        e.originalEvent.dataTransfer.effectAllowed = 'move';
+        e.originalEvent.dataTransfer.setData('text/plain', $draggedRow.data('todo-id'));
+    });
+
+    $tbody.on('dragend', '.todo-row', function () {
+        $(this).removeClass('dragging');
+        $tbody.find('.todo-row').removeClass('drag-over-top drag-over-bottom');
+    });
+
+    $tbody.on('dragover', '.todo-row', function (e) {
+        if (!$draggedRow) {
+            return;
+        }
+
+        var $target = $(this);
+        if ($target.is($draggedRow)) {
+            return;
+        }
+
+        e.preventDefault();
+        e.originalEvent.dataTransfer.dropEffect = 'move';
+
+        var rect = this.getBoundingClientRect();
+        var isAfter = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+
+        $tbody.find('.todo-row').removeClass('drag-over-top drag-over-bottom');
+        $target.addClass(isAfter ? 'drag-over-bottom' : 'drag-over-top');
+    });
+
+    $tbody.on('drop', '.todo-row', function (e) {
+        e.preventDefault();
+
+        var $target = $(this);
+        $tbody.find('.todo-row').removeClass('drag-over-top drag-over-bottom');
+
+        if (!$draggedRow || $target.is($draggedRow)) {
+            return;
+        }
+
+        var rect = this.getBoundingClientRect();
+        var isAfter = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+
+        if (isAfter) {
+            $target.after($draggedRow);
+        } else {
+            $target.before($draggedRow);
+        }
+
+        var newOrder = getRowOrder();
+        var $failedRow = $draggedRow;
+
+        $.ajax({
+            url: '/Todos/Reorder',
+            method: 'POST',
+            contentType: 'application/json',
+            headers: { 'X-CSRF-TOKEN': antiForgeryToken },
+            data: JSON.stringify({ orderedIds: newOrder })
+        }).fail(function () {
+            var $rows = {};
+            $tbody.find('.todo-row').each(function () {
+                $rows[$(this).data('todo-id')] = $(this);
+            });
+            originalOrder.forEach(function (id) {
+                $tbody.append($rows[id]);
+            });
+            alert('Could not save the new order. Please try again.');
+        });
+
+        $draggedRow = null;
+        originalOrder = [];
+    });
+}
+
+function initTodosHistoryRowReorder(antiForgeryToken) {
+    var $tbody = $('#todosHistoryTableBody');
+    if ($tbody.length === 0) {
+        return;
+    }
+
+    var $draggedRow = null;
+    var draggedDate = null;
+    var originalOrder = [];
+
+    function getRowOrderForDate(date) {
+        return $tbody.find('.todo-history-row[data-todo-date="' + date + '"]').map(function () {
+            return $(this).data('todo-id');
+        }).get();
+    }
+
+    $tbody.on('dragstart', '.todo-history-row', function (e) {
+        $draggedRow = $(this);
+        draggedDate = $draggedRow.data('todo-date');
+        originalOrder = getRowOrderForDate(draggedDate);
+        $draggedRow.addClass('dragging');
+        e.originalEvent.dataTransfer.effectAllowed = 'move';
+        e.originalEvent.dataTransfer.setData('text/plain', $draggedRow.data('todo-id'));
+    });
+
+    $tbody.on('dragend', '.todo-history-row', function () {
+        $(this).removeClass('dragging');
+        $tbody.find('.todo-history-row').removeClass('drag-over-top drag-over-bottom');
+    });
+
+    $tbody.on('dragover', '.todo-history-row', function (e) {
+        if (!$draggedRow) {
+            return;
+        }
+
+        var $target = $(this);
+        if ($target.is($draggedRow) || $target.data('todo-date') !== draggedDate) {
+            return;
+        }
+
+        e.preventDefault();
+        e.originalEvent.dataTransfer.dropEffect = 'move';
+
+        var rect = this.getBoundingClientRect();
+        var isAfter = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+
+        $tbody.find('.todo-history-row').removeClass('drag-over-top drag-over-bottom');
+        $target.addClass(isAfter ? 'drag-over-bottom' : 'drag-over-top');
+    });
+
+    $tbody.on('drop', '.todo-history-row', function (e) {
+        var $target = $(this);
+        $tbody.find('.todo-history-row').removeClass('drag-over-top drag-over-bottom');
+
+        if (!$draggedRow || $target.is($draggedRow) || $target.data('todo-date') !== draggedDate) {
+            return;
+        }
+
+        e.preventDefault();
+
+        var rect = this.getBoundingClientRect();
+        var isAfter = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+
+        if (isAfter) {
+            $target.after($draggedRow);
+        } else {
+            $target.before($draggedRow);
+        }
+
+        var newOrder = getRowOrderForDate(draggedDate);
+
+        $.ajax({
+            url: '/Todos/Reorder',
+            method: 'POST',
+            contentType: 'application/json',
+            headers: { 'X-CSRF-TOKEN': antiForgeryToken },
+            data: JSON.stringify({ orderedIds: newOrder })
+        }).fail(function () {
+            var $rows = {};
+            var $group = $tbody.find('.todo-history-row[data-todo-date="' + draggedDate + '"]');
+            $group.each(function () {
+                $rows[$(this).data('todo-id')] = $(this);
+            });
+            var $groupEnd = $group.last().next();
+
+            originalOrder.forEach(function (id) {
+                if ($groupEnd.length) {
+                    $groupEnd.before($rows[id]);
+                } else {
+                    $tbody.append($rows[id]);
+                }
+            });
+            alert('Could not save the new order. Please try again.');
+        });
+
+        $draggedRow = null;
+        draggedDate = null;
+        originalOrder = [];
+    });
+}
+
 function initTodoTagToggles(antiForgeryToken) {
     $(document).on('click', '.tag-badge', function () {
         var $badge = $(this);
@@ -158,6 +351,8 @@ $(function () {
     }
 
     initTodosKanbanDragAndDrop(antiForgeryToken);
+    initTodosTableRowReorder(antiForgeryToken);
+    initTodosHistoryRowReorder(antiForgeryToken);
     initTodoTagToggles(antiForgeryToken);
 
     $('.task-status-select').each(function () {

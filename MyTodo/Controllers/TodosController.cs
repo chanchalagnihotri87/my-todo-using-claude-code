@@ -90,6 +90,15 @@ namespace MyTodo.Controllers
             return Json(new { isFrog = updated.IsFrog });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reorder([FromBody] ReorderTodosRequest request)
+        {
+            await _todoService.ReorderAsync(request.OrderedIds);
+            _logger.LogInformation("Reordered {Count} todos", request.OrderedIds.Count);
+            return Ok();
+        }
+
         private static bool TryParseWeek(string week, out DateOnly weekStart, out DateOnly weekEnd)
         {
             weekStart = default;

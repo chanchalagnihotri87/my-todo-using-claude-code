@@ -27,6 +27,10 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasDefaultValue(false);
 
+            builder.Property(x => x.SortOrder)
+                .IsRequired()
+                .HasDefaultValue(0);
+
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 

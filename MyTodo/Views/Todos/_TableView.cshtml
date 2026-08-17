@@ -4,6 +4,7 @@
     <table class="table table-striped align-middle">
         <thead>
             <tr>
+                <th class="reorder-handle-col"></th>
                 <th>Task</th>
                 <th>Objective</th>
                 <th>Sprint</th>
@@ -11,10 +12,13 @@
                 <th>Status</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="todosTableBody">
             @foreach (var todo in Model)
             {
-                <tr data-todo-task-id="@todo.TodoTaskId">
+                <tr data-todo-id="@todo.Id" data-todo-task-id="@todo.TodoTaskId" draggable="true" class="todo-row">
+                    <td class="reorder-handle-col">
+                        <span class="reorder-handle" title="Drag to reorder">&#9776;</span>
+                    </td>
                     <td>
                         <span class="@(todo.TaskStatus == TodoStatus.Completed ? "text-muted" : "")">@todo.TodoTaskName</span>
                     </td>

@@ -23,10 +23,14 @@ namespace MyTodo.Application.Services
                 return MapToDto(existing);
             }
 
+            var todoDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            var maxSortOrder = await _todoRepository.GetMaxSortOrderAsync(todoDate);
+
             var todo = new Todo
             {
                 TodoTaskId = todoTaskId,
-                TodoDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                TodoDate = todoDate,
+                SortOrder = maxSortOrder + 1,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -107,6 +111,22 @@ namespace MyTodo.Application.Services
             return MapToDto(todo);
         }
 
+        public async Task ReorderAsync(List<int> orderedTodoIds)
+        {
+            for (var index = 0; index < orderedTodoIds.Count; index++)
+            {
+                var todo = await _todoRepository.GetByIdAsync(orderedTodoIds[index]);
+                if (todo == null)
+                {
+                    continue;
+                }
+
+                todo.SortOrder = index;
+                todo.UpdatedAt = DateTime.UtcNow;
+                await _todoRepository.UpdateAsync(todo);
+            }
+        }
+
         public async Task<List<TodoDto>> GetTodayAsync()
         {
             var todos = await _todoRepository.GetByDateAsync(DateOnly.FromDateTime(DateTime.UtcNow));
@@ -134,6 +154,7 @@ namespace MyTodo.Application.Services
                 IsUrgent = todo.IsUrgent,
                 IsImportant = todo.IsImportant,
                 IsFrog = todo.IsFrog,
+                SortOrder = todo.SortOrder,
                 CompletedAt = todo.TodoTask?.CompletedAt,
                 CreatedAt = todo.CreatedAt,
                 UpdatedAt = todo.UpdatedAt

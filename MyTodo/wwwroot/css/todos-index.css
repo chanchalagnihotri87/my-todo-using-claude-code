@@ -15,6 +15,31 @@
     outline-offset: -2px;
 }
 
+.reorder-handle-col {
+    width: 1px;
+    white-space: nowrap;
+}
+
+.reorder-handle {
+    cursor: grab;
+    color: var(--bs-secondary, #6c757d);
+}
+
+.todo-row.dragging,
+.todo-history-row.dragging {
+    opacity: 0.4;
+}
+
+.todo-row.drag-over-top,
+.todo-history-row.drag-over-top {
+    border-top: 2px solid var(--bs-primary);
+}
+
+.todo-row.drag-over-bottom,
+.todo-history-row.drag-over-bottom {
+    border-bottom: 2px solid var(--bs-primary);
+}
+
 .todo-tag-badges {
     display: inline-flex;
     gap: 0.35rem;

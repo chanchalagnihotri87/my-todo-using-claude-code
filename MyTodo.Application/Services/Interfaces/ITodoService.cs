@@ -9,6 +9,7 @@ namespace MyTodo.Application.Services.Interfaces
         Task<TodoDto?> ToggleUrgentAsync(int todoId);
         Task<TodoDto?> ToggleImportantAsync(int todoId);
         Task<TodoDto?> ToggleFrogAsync(int todoId);
+        Task ReorderAsync(List<int> orderedTodoIds);
         Task<List<TodoDto>> GetTodayAsync();
         Task<List<TodoDto>> GetHistoryAsync(int? objectiveId, DateOnly? fromDate, DateOnly? toDate);
     }

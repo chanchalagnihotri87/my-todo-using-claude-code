@@ -23,12 +23,23 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
                 .Include(x => x.TodoTask).ThenInclude(t => t.Objective)
                 .Include(x => x.TodoTask).ThenInclude(t => t.Sprint)
                 .Where(x => x.TodoDate == date)
-                .OrderByDescending(x => x.IsFrog)
+                .OrderBy(x => x.SortOrder)
+                .ThenByDescending(x => x.IsFrog)
                 .ThenByDescending(x => x.IsUrgent && x.IsImportant)
                 .ThenByDescending(x => x.IsImportant)
                 .ThenByDescending(x => x.IsUrgent)
                 .ThenBy(x => x.TodoTask.Name)
                 .ToListAsync();
+        }
+
+        public async Task<int> GetMaxSortOrderAsync(DateOnly date)
+        {
+            var maxSortOrder = await _dbSet.AsNoTracking()
+                .Where(x => x.TodoDate == date)
+                .Select(x => (int?)x.SortOrder)
+                .MaxAsync();
+
+            return maxSortOrder ?? -1;
         }
 
         public async Task<Todo?> GetFrogByDateAsync(DateOnly date)
@@ -58,7 +69,10 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
                 query = query.Where(x => x.TodoDate <= toDate.Value);
             }
 
-            return await query.OrderByDescending(x => x.TodoDate).ToListAsync();
+            return await query
+                .OrderBy(x => x.TodoDate)
+                .ThenBy(x => x.SortOrder)
+                .ToListAsync();
         }
     }
 }

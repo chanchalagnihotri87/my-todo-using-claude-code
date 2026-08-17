@@ -1,11 +1,15 @@
 @model List<TodoDto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @{
     ViewData["Title"] = "Todo History";
     var objectives = (List<ObjectiveDto>)ViewBag.Objectives;
     int? selectedObjectiveId = ViewBag.SelectedObjectiveId;
     DateOnly? selectedDate = ViewBag.SelectedDate;
     string? selectedWeek = ViewBag.SelectedWeek;
+    var antiForgeryToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
+
+<input type="hidden" id="todosAntiForgeryToken" value="@antiForgeryToken" />
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Todo History</h1>
@@ -52,6 +56,7 @@ else
         <table class="table table-striped align-middle">
             <thead>
                 <tr>
+                    <th class="reorder-handle-col"></th>
                     <th>Date</th>
                     <th>Task</th>
                     <th>Objective</th>
@@ -60,10 +65,13 @@ else
                     <th>Completed At</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="todosHistoryTableBody">
                 @foreach (var todo in Model)
                 {
-                    <tr>
+                    <tr class="todo-history-row" data-todo-id="@todo.Id" data-todo-date="@todo.TodoDate.ToString("yyyy-MM-dd")" draggable="true">
+                        <td class="reorder-handle-col">
+                            <span class="reorder-handle" title="Drag to reorder within this date">&#9776;</span>
+                        </td>
                         <td>@todo.TodoDate.ToString("ddd, dd-MMM-yyyy")</td>
                         <td>@todo.TodoTaskName</td>
                         <td>
@@ -80,4 +88,12 @@ else
             </tbody>
         </table>
     </div>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/todos-index.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/todos-index.js" asp-append-version="true"></script>
 }
