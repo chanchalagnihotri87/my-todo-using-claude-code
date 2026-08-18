@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyTodo.Application\MyTodo.Application.csproj" />
+    <ProjectReference Include="..\MyTodo.Domain.Shared\MyTodo.Domain.Shared.csproj" />
     <ProjectReference Include="..\MyTodo.Infrastructure\MyTodo.Infrastructure.csproj" />
   </ItemGroup>
 

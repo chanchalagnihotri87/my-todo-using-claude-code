@@ -4,6 +4,7 @@
   </Folder>
   <Project Path="MyTodo.Application/MyTodo.Application.csproj" />
   <Project Path="MyTodo.Domain/MyTodo.Domain.csproj" />
+  <Project Path="MyTodo.Domain.Shared/MyTodo.Domain.Shared.csproj" />
   <Project Path="MyTodo.Infrastructure/MyTodo.Infrastructure.csproj" />
   <Project Path="MyTodo/MyTodo.csproj" />
 </Solution>
