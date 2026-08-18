@@ -11,7 +11,7 @@ MyTodo  ──depends on──▶  MyTodo.Application  ──depends on──▶
 ```
 
 - **`MyTodo.Domain`** has no dependencies on any other project. It contains only entities (`Domain/Entities`) and enums (`Domain/Enums`) — plain C# classes with no EF Core, no ASP.NET Core, no attributes.
-- **`MyTodo.Application`** depends only on `MyTodo.Domain`. It defines the application's use cases as services, and declares the repository contracts it needs (`Repository/Interface`) without knowing how they're implemented.
+- **`MyTodo.Application`** depends only on `MyTodo.Domain`. It defines the application's use cases as services, and declares the repository contracts it needs (`Repositories/Interfaces`) without knowing how they're implemented.
 - **`MyTodo.Infrastructure`** depends on `MyTodo.Domain` (for entities) and implements the repository interfaces declared in `MyTodo.Application`, using EF Core against SQL Server.
 - **`MyTodo`** (presentation) depends only on `MyTodo.Application`. Controllers never reference `MyTodo.Infrastructure` or EF Core types directly — they only see service interfaces.
 
@@ -58,7 +58,7 @@ Read requests follow the same path but typically skip the DTO→Entity mapping s
 
 ### Repository Pattern
 Every entity that needs persistence has:
-- An interface in `MyTodo.Application/Repository/Interface/` (e.g. `IObjectiveRepository`)
+- An interface in `MyTodo.Application/Repositories/Interfaces/` (e.g. `IObjectiveRepository`)
 - An implementation in `MyTodo.Infrastructure/Persistence/Repositories/` (e.g. `ObjectiveRepository`)
 
 `BaseRepository<T>` (`MyTodo.Infrastructure/Persistence/Repositories/BaseRepository.cs`) implements `IBaseRepository<T>` with the common CRUD operations (`GetAllAsync`, `GetByIdAsync`, `AddAsync`, `UpdateAsync`, `DeleteAsync`) against a generic `DbSet<T>`. Entity-specific repositories inherit from it and add query methods particular to that entity (e.g. `IObjectiveRepository.GetBySolutionIdAsync`).

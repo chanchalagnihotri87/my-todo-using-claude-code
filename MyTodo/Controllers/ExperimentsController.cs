@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Enums;
+using MyTodo.Extensions;
 using MyTodo.Models;
 
 namespace MyTodo.Controllers
@@ -67,9 +68,8 @@ namespace MyTodo.Controllers
                 return BadRequest();
             }
 
-            if (!Enum.TryParse<ExperimentStatus>(request.Status, out var status))
+            if (!_logger.TryParseOrLogWarning<ExperimentStatus>(request.Status, $"editing experiment {request.Id}", out var status))
             {
-                _logger.LogWarning("Invalid status {Status} when editing experiment {ExperimentId}", request.Status, request.Id);
                 return BadRequest();
             }
 
@@ -96,9 +96,8 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reorder([FromBody] ReorderExperimentsRequest request)
         {
-            if (!Enum.TryParse<ExperimentStatus>(request.Status, out var status))
+            if (!_logger.TryParseOrLogWarning<ExperimentStatus>(request.Status, $"reordering experiment {request.Id}", out var status))
             {
-                _logger.LogWarning("Invalid status {Status} when reordering experiment {ExperimentId}", request.Status, request.Id);
                 return BadRequest();
             }
 

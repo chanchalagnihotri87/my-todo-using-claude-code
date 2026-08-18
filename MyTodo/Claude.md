@@ -4,6 +4,7 @@
 - `Controllers/` – MVC controllers, thin — no business logic here
 - `Views/` – Razor views, organized by controller name
 - `Models/` – ViewModels only (input/form models), not domain entities
+- `Extensions/` – small extension methods shared across controllers (e.g. enum-parsing/logging helpers)
 - `wwwroot/` – static files (css, js, images)
 
 ## DTO vs ViewModel rule
@@ -26,6 +27,6 @@
 
 ## Don'ts
 - Don't put EF Core or SQL logic in controllers or views.
-- Don't reference `MyTodo.Infrastructure` directly from this project — always go through `MyTodo.Application` interfaces.
+- Don't reference `MyTodo.Infrastructure` from Controllers, Views, or Models — always go through `MyTodo.Application` interfaces. (The `MyTodo.Infrastructure` project reference in `MyTodo.csproj` exists solely for `Program.cs`, the composition root, to call `AddInfrastructureServices()` — that's the one place allowed to see all layers.)
 - Don't create a ViewModel just to mirror a DTO for display — use the DTO directly.
 - Don't create a ViewModel just to mirror a DTO for display — use the DTO directly.

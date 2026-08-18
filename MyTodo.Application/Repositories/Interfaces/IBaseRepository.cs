@@ -1,4 +1,4 @@
-namespace MyTodo.Application.Repository.Interface
+namespace MyTodo.Application.Repositories.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {

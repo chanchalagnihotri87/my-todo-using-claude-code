@@ -1,5 +1,6 @@
 using MyTodo.Application.DTOs;
-using MyTodo.Application.Repository.Interface;
+using MyTodo.Application.Repositories.Interfaces;
+using MyTodo.Application.Services.Common;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Entities;
 using MyTodo.Domain.Enums;
@@ -69,17 +70,10 @@ namespace MyTodo.Application.Services
             experiment.LastUpdatedAt = DateTime.UtcNow;
             await _experimentRepository.UpdateAsync(experiment);
 
-            for (var index = 0; index < orderedIds.Count; index++)
+            await ReorderHelper.ReindexAsync(_experimentRepository, experiment, id, orderedIds, (entity, index) =>
             {
-                var current = orderedIds[index] == id ? experiment : await _experimentRepository.GetByIdAsync(orderedIds[index]);
-                if (current == null)
-                {
-                    continue;
-                }
-
-                current.SortOrder = index;
-                await _experimentRepository.UpdateAsync(current);
-            }
+                entity.SortOrder = index;
+            });
 
             return true;
         }

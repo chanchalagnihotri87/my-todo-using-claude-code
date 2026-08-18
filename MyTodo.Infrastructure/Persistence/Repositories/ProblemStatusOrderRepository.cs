@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MyTodo.Application.Repository.Interface;
+using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Domain.Entities;
 using MyTodo.Domain.Enums;
 using MyTodo.Infrastructure.Persistence.DbContext;

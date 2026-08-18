@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Enums;
+using MyTodo.Extensions;
 using MyTodo.Models;
 
 namespace MyTodo.Controllers
@@ -91,9 +92,8 @@ namespace MyTodo.Controllers
                 return BadRequest();
             }
 
-            if (!Enum.TryParse<ProblemStatus>(request.Status, out var status))
+            if (!_logger.TryParseOrLogWarning<ProblemStatus>(request.Status, $"editing problem {request.Id}", out var status))
             {
-                _logger.LogWarning("Invalid status {Status} when editing problem {ProblemId}", request.Status, request.Id);
                 return BadRequest();
             }
 
@@ -137,9 +137,8 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus([FromBody] UpdateProblemStatusRequest request)
         {
-            if (!Enum.TryParse<ProblemStatus>(request.Status, out var status))
+            if (!_logger.TryParseOrLogWarning<ProblemStatus>(request.Status, $"updating problem {request.Id} status", out var status))
             {
-                _logger.LogWarning("Invalid status {Status} when updating problem {ProblemId} status", request.Status, request.Id);
                 return BadRequest();
             }
 
@@ -161,9 +160,8 @@ namespace MyTodo.Controllers
             var statuses = new List<ProblemStatus>();
             foreach (var value in request.OrderedStatuses)
             {
-                if (!Enum.TryParse<ProblemStatus>(value, out var status))
+                if (!_logger.TryParseOrLogWarning<ProblemStatus>(value, "reordering problem lists", out var status))
                 {
-                    _logger.LogWarning("Invalid status {Status} when reordering problem lists", value);
                     return BadRequest();
                 }
                 statuses.Add(status);

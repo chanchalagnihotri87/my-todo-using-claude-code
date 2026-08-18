@@ -1,5 +1,6 @@
 using MyTodo.Application.DTOs;
-using MyTodo.Application.Repository.Interface;
+using MyTodo.Application.Repositories.Interfaces;
+using MyTodo.Application.Services.Common;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Entities;
 using MyTodo.Domain.Enums;
@@ -55,19 +56,11 @@ namespace MyTodo.Application.Services
             solution.UpdatedAt = DateTime.UtcNow;
             await _solutionRepository.UpdateAsync(solution);
 
-            for (var index = 0; index < orderedIds.Count; index++)
+            await ReorderHelper.ReindexAsync(_solutionRepository, solution, id, orderedIds, (entity, index) =>
             {
-                var current = orderedIds[index] == id ? solution : await _solutionRepository.GetByIdAsync(orderedIds[index]);
-                if (current == null)
-                {
-                    continue;
-                }
-
-                current.SortOrder = index;
-                current.UpdatedAt = DateTime.UtcNow;
-
-                await _solutionRepository.UpdateAsync(current);
-            }
+                entity.SortOrder = index;
+                entity.UpdatedAt = DateTime.UtcNow;
+            });
 
             return true;
         }
@@ -84,19 +77,11 @@ namespace MyTodo.Application.Services
             solution.UpdatedAt = DateTime.UtcNow;
             await _solutionRepository.UpdateAsync(solution);
 
-            for (var index = 0; index < orderedIds.Count; index++)
+            await ReorderHelper.ReindexAsync(_solutionRepository, solution, id, orderedIds, (entity, index) =>
             {
-                var current = orderedIds[index] == id ? solution : await _solutionRepository.GetByIdAsync(orderedIds[index]);
-                if (current == null)
-                {
-                    continue;
-                }
-
-                current.SortOrder = index;
-                current.UpdatedAt = DateTime.UtcNow;
-
-                await _solutionRepository.UpdateAsync(current);
-            }
+                entity.SortOrder = index;
+                entity.UpdatedAt = DateTime.UtcNow;
+            });
 
             return true;
         }

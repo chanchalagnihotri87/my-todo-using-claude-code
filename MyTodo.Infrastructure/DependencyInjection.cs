@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MyTodo.Application.Repository.Interface;
+using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Infrastructure.Persistence.DbContext;
 using MyTodo.Infrastructure.Persistence.Repositories;
 

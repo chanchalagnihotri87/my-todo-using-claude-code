@@ -1,5 +1,6 @@
 using MyTodo.Application.DTOs;
-using MyTodo.Application.Repository.Interface;
+using MyTodo.Application.Repositories.Interfaces;
+using MyTodo.Application.Services.Common;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Entities;
 using MyTodo.Domain.Enums;
@@ -78,17 +79,10 @@ namespace MyTodo.Application.Services
             objective.CompletedAt = status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
             await _objectiveRepository.UpdateAsync(objective);
 
-            for (var index = 0; index < orderedIds.Count; index++)
+            await ReorderHelper.ReindexAsync(_objectiveRepository, objective, id, orderedIds, (entity, index) =>
             {
-                var current = orderedIds[index] == id ? objective : await _objectiveRepository.GetByIdAsync(orderedIds[index]);
-                if (current == null)
-                {
-                    continue;
-                }
-
-                current.SortOrder = index;
-                await _objectiveRepository.UpdateAsync(current);
-            }
+                entity.SortOrder = index;
+            });
 
             return true;
         }
@@ -104,17 +98,10 @@ namespace MyTodo.Application.Services
             objective.IsTwentyPercent = isTwentyPercent;
             await _objectiveRepository.UpdateAsync(objective);
 
-            for (var index = 0; index < orderedIds.Count; index++)
+            await ReorderHelper.ReindexAsync(_objectiveRepository, objective, id, orderedIds, (entity, index) =>
             {
-                var current = orderedIds[index] == id ? objective : await _objectiveRepository.GetByIdAsync(orderedIds[index]);
-                if (current == null)
-                {
-                    continue;
-                }
-
-                current.SortOrder = index;
-                await _objectiveRepository.UpdateAsync(current);
-            }
+                entity.SortOrder = index;
+            });
 
             return true;
         }

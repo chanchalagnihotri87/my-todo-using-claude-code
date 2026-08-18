@@ -1,13 +1,14 @@
 ﻿# MyTodo.Application - Notes
 
 ## Folder Layout
-- `Repository/Interface`: Contains repository interface definitions for data access.
+- `Repositories/Interfaces`: Contains repository interface definitions for data access.
 - `Services`: Contains service classes that implement business logic and interact with repositories.
 - `Services/Interfaces`: Contains service interface definitions for dependency injection and abstraction.
+- `Services/Common`: Contains helpers shared across multiple services (e.g. `ReorderHelper`) — not tied to a single entity.
 -  `DTOs`: Contains Data Transfer Objects used for transferring data between layers.
 
 ## Rules
-- Every repository gets an interface first in `Repository/Interface/`, implementation lives in `MyTodo.Infrastructure/Persistence/Repositories/`.
+- Every repository gets an interface first in `Repositories/Interfaces/`, implementation lives in `MyTodo.Infrastructure/Persistence/Repositories/`.
 - Every service gets an interface in `Service/Interface/` before the concrete class in `Service/`.
 - Controllers depend only on interfaces (`ITaskService`, not `TaskService`) — enables DI and testing.
 - Services orchestrate repositories; repositories never call other repositories directly.

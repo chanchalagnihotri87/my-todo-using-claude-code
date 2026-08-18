@@ -1,7 +1,7 @@
 using MyTodo.Domain.Entities;
 using MyTodo.Domain.Enums;
 
-namespace MyTodo.Application.Repository.Interface
+namespace MyTodo.Application.Repositories.Interfaces
 {
     public interface IProblemStatusOrderRepository : IBaseRepository<ProblemStatusOrder>
     {

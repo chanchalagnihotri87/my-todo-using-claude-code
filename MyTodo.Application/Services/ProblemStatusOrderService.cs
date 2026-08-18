@@ -1,4 +1,4 @@
-using MyTodo.Application.Repository.Interface;
+using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Enums;
 

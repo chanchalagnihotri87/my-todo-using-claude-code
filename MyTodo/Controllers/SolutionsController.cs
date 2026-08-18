@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Enums;
+using MyTodo.Extensions;
 using MyTodo.Models;
 
 namespace MyTodo.Controllers
@@ -95,9 +96,8 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reorder([FromBody] ReorderSolutionsRequest request)
         {
-            if (!Enum.TryParse<SolutionStatus>(request.Status, out var status))
+            if (!_logger.TryParseOrLogWarning<SolutionStatus>(request.Status, $"reordering solution {request.Id}", out var status))
             {
-                _logger.LogWarning("Invalid status {Status} when reordering solution {SolutionId}", request.Status, request.Id);
                 return BadRequest();
             }
 
