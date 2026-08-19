@@ -86,9 +86,9 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody] UpdateProblemRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
+            if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid name when editing problem {ProblemId}", request.Id);
+                _logger.LogWarning("Invalid model state when editing problem {ProblemId}", request.Id);
                 return BadRequest();
             }
 

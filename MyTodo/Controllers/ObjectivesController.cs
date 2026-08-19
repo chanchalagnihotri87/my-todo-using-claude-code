@@ -61,9 +61,9 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody] UpdateObjectiveRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Text) || request.Text.Length > 300)
+            if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid text when editing objective {ObjectiveId}", request.Id);
+                _logger.LogWarning("Invalid model state when editing objective {ObjectiveId}", request.Id);
                 return BadRequest();
             }
 

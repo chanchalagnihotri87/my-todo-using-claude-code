@@ -62,9 +62,9 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody] UpdateExperimentRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
+            if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid name when editing experiment {ExperimentId}", request.Id);
+                _logger.LogWarning("Invalid model state when editing experiment {ExperimentId}", request.Id);
                 return BadRequest();
             }
 

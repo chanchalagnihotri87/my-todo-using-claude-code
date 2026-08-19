@@ -80,9 +80,9 @@ namespace MyTodo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody] UpdateSprintRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200)
+            if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid name when editing sprint {SprintId}", request.Id);
+                _logger.LogWarning("Invalid model state when editing sprint {SprintId}", request.Id);
                 return BadRequest();
             }
 
