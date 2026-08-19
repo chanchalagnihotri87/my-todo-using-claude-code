@@ -19,5 +19,10 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
                 .ThenBy(x => x.CreatedAt)
                 .ToListAsync();
         }
+
+        public async Task<int> CountBySolutionIdAsync(int solutionId)
+        {
+            return await _dbSet.CountAsync(x => x.SolutionId == solutionId);
+        }
     }
 }

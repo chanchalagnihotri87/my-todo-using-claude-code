@@ -36,13 +36,13 @@ namespace MyTodo.Application.Services
 
         public async Task<ObjectiveDto> CreateAsync(CreateObjectiveDto createObjectiveDto)
         {
-            var existing = await _objectiveRepository.GetBySolutionIdAsync(createObjectiveDto.SolutionId);
+            var count = await _objectiveRepository.CountBySolutionIdAsync(createObjectiveDto.SolutionId);
 
             var objective = new Objective
             {
                 SolutionId = createObjectiveDto.SolutionId,
                 Text = createObjectiveDto.Text,
-                SortOrder = existing.Count,
+                SortOrder = count,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -69,41 +69,28 @@ namespace MyTodo.Application.Services
 
         public async Task<bool> ReorderAsync(int id, ObjectiveStatus status, List<int> orderedIds)
         {
-            var objective = await _objectiveRepository.GetByIdAsync(id);
-            if (objective == null)
-            {
-                return false;
-            }
-
-            objective.Status = status;
-            objective.CompletedAt = status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
-            await _objectiveRepository.UpdateAsync(objective);
-
-            await ReorderHelper.ReindexAsync(_objectiveRepository, objective, id, orderedIds, (entity, index) =>
-            {
-                entity.SortOrder = index;
-            });
-
-            return true;
+            return await ReorderHelper.ReindexAsync(
+                _objectiveRepository,
+                x => x.Id,
+                orderedIds,
+                (entity, index) => entity.SortOrder = index,
+                anchorId: id,
+                applyToAnchor: entity =>
+                {
+                    entity.Status = status;
+                    entity.CompletedAt = status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
+                });
         }
 
         public async Task<bool> ReorderFocusAsync(int id, bool isTwentyPercent, List<int> orderedIds)
         {
-            var objective = await _objectiveRepository.GetByIdAsync(id);
-            if (objective == null)
-            {
-                return false;
-            }
-
-            objective.IsTwentyPercent = isTwentyPercent;
-            await _objectiveRepository.UpdateAsync(objective);
-
-            await ReorderHelper.ReindexAsync(_objectiveRepository, objective, id, orderedIds, (entity, index) =>
-            {
-                entity.SortOrder = index;
-            });
-
-            return true;
+            return await ReorderHelper.ReindexAsync(
+                _objectiveRepository,
+                x => x.Id,
+                orderedIds,
+                (entity, index) => entity.SortOrder = index,
+                anchorId: id,
+                applyToAnchor: entity => entity.IsTwentyPercent = isTwentyPercent);
         }
 
         public async Task<bool> DeleteAsync(int id)

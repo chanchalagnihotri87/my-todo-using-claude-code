@@ -14,7 +14,6 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
         public async Task<List<Solution>> GetByProblemIdAsync(int problemId)
         {
             return await _dbSet.AsNoTracking()
-                .Include(x => x.Objectives)
                 .Where(x => x.ProblemId == problemId)
                 .OrderBy(x => x.SortOrder)
                 .ThenBy(x => x.Name)

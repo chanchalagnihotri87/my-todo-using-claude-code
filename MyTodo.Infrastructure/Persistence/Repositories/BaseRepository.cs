@@ -25,6 +25,12 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
             return await _dbSet.FindAsync(id);
         }
 
+        public virtual async Task<List<T>> GetByIdsAsync(IEnumerable<int> ids)
+        {
+            var idList = ids as ICollection<int> ?? ids.ToList();
+            return await _dbSet.Where(e => idList.Contains(EF.Property<int>(e, "Id"))).ToListAsync();
+        }
+
         public virtual async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
@@ -34,6 +40,12 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
         public virtual async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task UpdateRangeAsync(IEnumerable<T> entities)
+        {
+            _dbSet.UpdateRange(entities);
             await _context.SaveChangesAsync();
         }
 

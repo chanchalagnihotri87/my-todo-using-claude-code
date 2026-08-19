@@ -34,6 +34,8 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
 
+            builder.HasIndex(x => x.TodoDate);
+
             builder.HasOne(x => x.TodoTask)
                 .WithOne(x => x.Todo)
                 .HasForeignKey<Todo>(x => x.TodoTaskId)

@@ -24,14 +24,14 @@ namespace MyTodo.Application.Services
 
         public async Task<ExperimentDto> CreateAsync(CreateExperimentDto createExperimentDto)
         {
-            var existing = await _experimentRepository.GetBySolutionIdAsync(createExperimentDto.SolutionId);
+            var count = await _experimentRepository.CountBySolutionIdAsync(createExperimentDto.SolutionId);
 
             var experiment = new Experiment
             {
                 SolutionId = createExperimentDto.SolutionId,
                 Name = createExperimentDto.Name,
                 Description = createExperimentDto.Description,
-                SortOrder = existing.Count,
+                SortOrder = count,
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.UtcNow
             };
@@ -60,22 +60,17 @@ namespace MyTodo.Application.Services
 
         public async Task<bool> ReorderAsync(int id, ExperimentStatus status, List<int> orderedIds)
         {
-            var experiment = await _experimentRepository.GetByIdAsync(id);
-            if (experiment == null)
-            {
-                return false;
-            }
-
-            experiment.Status = status;
-            experiment.LastUpdatedAt = DateTime.UtcNow;
-            await _experimentRepository.UpdateAsync(experiment);
-
-            await ReorderHelper.ReindexAsync(_experimentRepository, experiment, id, orderedIds, (entity, index) =>
-            {
-                entity.SortOrder = index;
-            });
-
-            return true;
+            return await ReorderHelper.ReindexAsync(
+                _experimentRepository,
+                x => x.Id,
+                orderedIds,
+                (entity, index) => entity.SortOrder = index,
+                anchorId: id,
+                applyToAnchor: entity =>
+                {
+                    entity.Status = status;
+                    entity.LastUpdatedAt = DateTime.UtcNow;
+                });
         }
 
         public async Task<bool> DeleteAsync(int id)

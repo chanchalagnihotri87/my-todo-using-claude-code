@@ -1,5 +1,6 @@
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
+using MyTodo.Application.Services.Common;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Entities;
 using MyTodo.Domain.Enums;
@@ -113,18 +114,15 @@ namespace MyTodo.Application.Services
 
         public async Task ReorderAsync(List<int> orderedTodoIds)
         {
-            for (var index = 0; index < orderedTodoIds.Count; index++)
-            {
-                var todo = await _todoRepository.GetByIdAsync(orderedTodoIds[index]);
-                if (todo == null)
+            await ReorderHelper.ReindexAsync(
+                _todoRepository,
+                x => x.Id,
+                orderedTodoIds,
+                (todo, index) =>
                 {
-                    continue;
-                }
-
-                todo.SortOrder = index;
-                todo.UpdatedAt = DateTime.UtcNow;
-                await _todoRepository.UpdateAsync(todo);
-            }
+                    todo.SortOrder = index;
+                    todo.UpdatedAt = DateTime.UtcNow;
+                });
         }
 
         public async Task<List<TodoDto>> GetTodayAsync()
