@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 
 namespace MyTodo.Domain.Entities
 {

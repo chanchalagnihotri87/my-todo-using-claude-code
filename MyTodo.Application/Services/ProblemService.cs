@@ -3,7 +3,7 @@ using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Interfaces;
 using MyTodo.Domain.Entities;
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 
 namespace MyTodo.Application.Services
 {

@@ -1,5 +1,5 @@
 using MyTodo.Domain.Entities;
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 
 namespace MyTodo.Application.Repositories.Interfaces
 {

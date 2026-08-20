@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Services.Interfaces;
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 using MyTodo.Extensions;
 using MyTodo.Models;
 

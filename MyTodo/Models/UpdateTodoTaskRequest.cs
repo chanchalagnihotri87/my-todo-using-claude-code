@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 
 namespace MyTodo.Models
 {

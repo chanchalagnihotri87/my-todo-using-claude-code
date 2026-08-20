@@ -1,4 +1,4 @@
-﻿using MyTodo.Domain.Enums;
+﻿using MyTodo.Domain.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;

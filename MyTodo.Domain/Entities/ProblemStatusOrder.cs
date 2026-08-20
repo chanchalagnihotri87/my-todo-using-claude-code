@@ -1,4 +1,4 @@
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 
 namespace MyTodo.Domain.Entities
 {

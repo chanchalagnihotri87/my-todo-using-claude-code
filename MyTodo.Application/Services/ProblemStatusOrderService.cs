@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Interfaces;
-using MyTodo.Domain.Enums;
+using MyTodo.Domain.Shared.Enums;
 
 namespace MyTodo.Application.Services
 {

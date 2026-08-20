@@ -10,19 +10,22 @@ namespace MyTodo.Controllers
         private readonly ISolutionService _solutionService;
         private readonly IObjectiveService _objectiveService;
         private readonly ITodoTaskService _todoTaskService;
+        private readonly ILogger<ExploreController> _logger;
 
         public ExploreController(
             ILifeAreaService lifeAreaService,
             IProblemService problemService,
             ISolutionService solutionService,
             IObjectiveService objectiveService,
-            ITodoTaskService todoTaskService)
+            ITodoTaskService todoTaskService,
+            ILogger<ExploreController> logger)
         {
             _lifeAreaService = lifeAreaService;
             _problemService = problemService;
             _solutionService = solutionService;
             _objectiveService = objectiveService;
             _todoTaskService = todoTaskService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

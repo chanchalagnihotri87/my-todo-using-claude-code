@@ -1,4 +1,4 @@
-namespace MyTodo.Domain.Enums
+namespace MyTodo.Domain.Shared.Enums
 {
     public enum ExperimentStatus
     {

@@ -1,19 +1,24 @@
 # Architecture
 
-MyTodo follows Clean Architecture with four projects, each with a single, one-directional dependency:
+MyTodo follows Clean Architecture with five projects, each with a single, one-directional dependency:
 
 ```
-MyTodo  ──depends on──▶  MyTodo.Application  ──depends on──▶  MyTodo.Domain
-                                  ▲
-                                  │ implements interfaces from
-                                  │
-                       MyTodo.Infrastructure  ──depends on──▶  MyTodo.Domain
+MyTodo.Domain.Shared  (enums; no dependencies)
+        ▲
+MyTodo.Domain          ──depends on──▶  MyTodo.Domain.Shared
+        ▲
+MyTodo.Application     ──depends on──▶  MyTodo.Domain
+        ▲
+MyTodo.Infrastructure  ──depends on──▶  MyTodo.Application, MyTodo.Domain
+        ▲
+MyTodo (presentation)  ──depends on──▶  MyTodo.Application, MyTodo.Infrastructure, MyTodo.Domain.Shared
 ```
 
-- **`MyTodo.Domain`** has no dependencies on any other project. It contains only entities (`Domain/Entities`) and enums (`Domain/Enums`) — plain C# classes with no EF Core, no ASP.NET Core, no attributes.
+- **`MyTodo.Domain.Shared`** has no dependencies on any other project. It contains only enums (`Enums/`), shared across every layer that needs them (including the presentation layer, for display helpers).
+- **`MyTodo.Domain`** depends only on `MyTodo.Domain.Shared`. It contains entities (`Entities/`) — plain C# classes with no EF Core, no ASP.NET Core, no attributes.
 - **`MyTodo.Application`** depends only on `MyTodo.Domain`. It defines the application's use cases as services, and declares the repository contracts it needs (`Repositories/Interfaces`) without knowing how they're implemented.
-- **`MyTodo.Infrastructure`** depends on `MyTodo.Domain` (for entities) and implements the repository interfaces declared in `MyTodo.Application`, using EF Core against SQL Server.
-- **`MyTodo`** (presentation) depends only on `MyTodo.Application`. Controllers never reference `MyTodo.Infrastructure` or EF Core types directly — they only see service interfaces.
+- **`MyTodo.Infrastructure`** depends on `MyTodo.Domain` (for entities) and `MyTodo.Application` (implements the repository interfaces declared there), using EF Core against SQL Server.
+- **`MyTodo`** (presentation) depends on `MyTodo.Application`, `MyTodo.Domain.Shared` (for enum-based display helpers), and `MyTodo.Infrastructure`. The `Infrastructure` reference exists solely so `Program.cs` — the composition root — can call `AddInfrastructureServices()`; Controllers, Views, and Models never reference `MyTodo.Infrastructure` or EF Core types directly, only service interfaces from `MyTodo.Application` (see [`MyTodo/CLAUDE.md`](../MyTodo/CLAUDE.md)).
 
 This means the Infrastructure layer could be swapped (different database, different ORM) without touching Application or Domain, and Application logic can be unit tested without spinning up a real database (by mocking repository interfaces).
 
@@ -21,10 +26,11 @@ This means the Infrastructure layer could be swapped (different database, differ
 
 | Layer | Contains | Depends on |
 |---|---|---|
-| `MyTodo.Domain` | Entities, enums | *(nothing)* |
+| `MyTodo.Domain.Shared` | Enums | *(nothing)* |
+| `MyTodo.Domain` | Entities | `MyTodo.Domain.Shared` |
 | `MyTodo.Application` | Services, service interfaces, DTOs, repository interfaces | `MyTodo.Domain` |
 | `MyTodo.Infrastructure` | `DbContext`, EF entity configurations, migrations, repository implementations | `MyTodo.Domain`, `MyTodo.Application` (interfaces only) |
-| `MyTodo` | Controllers, Razor views, input ViewModels, request/response models, middleware | `MyTodo.Application` |
+| `MyTodo` | Controllers, Razor views, input ViewModels, request/response models, middleware | `MyTodo.Application`, `MyTodo.Domain.Shared`, `MyTodo.Infrastructure` (composition root only) |
 
 ## Request Flow
 
