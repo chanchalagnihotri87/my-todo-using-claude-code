@@ -28,7 +28,7 @@ namespace MyTodo.Application.Services
         public async Task<List<ObjectiveDto>> GetAllAsync()
         {
             var objectives = await _objectiveRepository.GetAllAsync();
-            return objectives.Select(MapToDto).OrderBy(x => x.Text).ToList();
+            return objectives.Select(MapToDto).ToList();
         }
 
         public async Task<ObjectiveDto?> GetByIdAsync(int id)

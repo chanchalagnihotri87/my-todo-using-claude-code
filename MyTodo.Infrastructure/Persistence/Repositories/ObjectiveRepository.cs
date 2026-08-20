@@ -12,6 +12,11 @@ namespace MyTodo.Infrastructure.Persistence.Repositories
         {
         }
 
+        public override async Task<List<Objective>> GetAllAsync()
+        {
+            return await _dbSet.AsNoTracking().OrderBy(x => x.Text).ToListAsync();
+        }
+
         public async Task<List<Objective>> GetBySolutionIdAsync(int solutionId)
         {
             return await _dbSet.AsNoTracking()

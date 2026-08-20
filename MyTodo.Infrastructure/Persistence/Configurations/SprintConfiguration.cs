@@ -27,6 +27,8 @@ namespace MyTodo.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
+
+            builder.HasIndex(x => new { x.StartDate, x.EndDate });
         }
     }
 }
