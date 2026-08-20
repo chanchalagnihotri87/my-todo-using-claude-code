@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Interfaces;
@@ -9,10 +10,12 @@ namespace MyTodo.Application.Services
     public class ProblemService : IProblemService
     {
         private readonly IProblemRepository _problemRepository;
+        private readonly ILogger<ProblemService> _logger;
 
-        public ProblemService(IProblemRepository problemRepository)
+        public ProblemService(IProblemRepository problemRepository, ILogger<ProblemService> logger)
         {
             _problemRepository = problemRepository;
+            _logger = logger;
         }
 
         public async Task<List<ProblemDto>> GetByLifeAreaIdAsync(int lifeAreaId)
@@ -39,6 +42,8 @@ namespace MyTodo.Application.Services
 
             await _problemRepository.AddAsync(problem);
 
+            _logger.LogInformation("Problem {ProblemId} created for life area {LifeAreaId}", problem.Id, problem.LifeAreaId);
+
             return MapToDto(problem);
         }
 
@@ -47,6 +52,7 @@ namespace MyTodo.Application.Services
             var problem = await _problemRepository.GetByIdAsync(updateProblemDto.Id);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found for update", updateProblemDto.Id);
                 return null;
             }
 
@@ -67,8 +73,11 @@ namespace MyTodo.Application.Services
             var problem = await _problemRepository.GetByIdAsync(id);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found for status update", id);
                 return null;
             }
+
+            _logger.LogInformation("Problem {ProblemId} status changed from {OldStatus} to {NewStatus}", problem.Id, problem.Status, status);
 
             problem.Status = status;
             problem.UpdatedAt = DateTime.UtcNow;
@@ -83,6 +92,7 @@ namespace MyTodo.Application.Services
             var problem = await _problemRepository.GetByIdAsync(id);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found for urgent toggle", id);
                 return null;
             }
 
@@ -99,6 +109,7 @@ namespace MyTodo.Application.Services
             var problem = await _problemRepository.GetByIdAsync(id);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found for important toggle", id);
                 return null;
             }
 
@@ -115,10 +126,13 @@ namespace MyTodo.Application.Services
             var problem = await _problemRepository.GetByIdAsync(id);
             if (problem == null)
             {
+                _logger.LogWarning("Problem {ProblemId} not found for delete", id);
                 return false;
             }
 
             await _problemRepository.DeleteAsync(problem);
+
+            _logger.LogInformation("Problem {ProblemId} deleted", id);
 
             return true;
         }

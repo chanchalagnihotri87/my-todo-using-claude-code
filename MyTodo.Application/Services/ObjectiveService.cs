@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Common;
@@ -10,10 +11,12 @@ namespace MyTodo.Application.Services
     public class ObjectiveService : IObjectiveService
     {
         private readonly IObjectiveRepository _objectiveRepository;
+        private readonly ILogger<ObjectiveService> _logger;
 
-        public ObjectiveService(IObjectiveRepository objectiveRepository)
+        public ObjectiveService(IObjectiveRepository objectiveRepository, ILogger<ObjectiveService> logger)
         {
             _objectiveRepository = objectiveRepository;
+            _logger = logger;
         }
 
         public async Task<List<ObjectiveDto>> GetBySolutionIdAsync(int solutionId)
@@ -48,6 +51,8 @@ namespace MyTodo.Application.Services
 
             await _objectiveRepository.AddAsync(objective);
 
+            _logger.LogInformation("Objective {ObjectiveId} created for solution {SolutionId}", objective.Id, objective.SolutionId);
+
             return MapToDto(objective);
         }
 
@@ -56,7 +61,13 @@ namespace MyTodo.Application.Services
             var objective = await _objectiveRepository.GetByIdAsync(updateObjectiveDto.Id);
             if (objective == null)
             {
+                _logger.LogWarning("Objective {ObjectiveId} not found for update", updateObjectiveDto.Id);
                 return null;
+            }
+
+            if (objective.Status != updateObjectiveDto.Status)
+            {
+                _logger.LogInformation("Objective {ObjectiveId} status changed from {OldStatus} to {NewStatus}", objective.Id, objective.Status, updateObjectiveDto.Status);
             }
 
             objective.Text = updateObjectiveDto.Text;
@@ -69,7 +80,7 @@ namespace MyTodo.Application.Services
 
         public async Task<bool> ReorderAsync(int id, ObjectiveStatus status, List<int> orderedIds)
         {
-            return await ReorderHelper.ReindexAsync(
+            var anchorFound = await ReorderHelper.ReindexAsync(
                 _objectiveRepository,
                 x => x.Id,
                 orderedIds,
@@ -80,17 +91,31 @@ namespace MyTodo.Application.Services
                     entity.Status = status;
                     entity.CompletedAt = status == ObjectiveStatus.Completed ? DateTime.UtcNow : null;
                 });
+
+            if (!anchorFound)
+            {
+                _logger.LogWarning("Objective {ObjectiveId} not found as reorder anchor", id);
+            }
+
+            return anchorFound;
         }
 
         public async Task<bool> ReorderFocusAsync(int id, bool isTwentyPercent, List<int> orderedIds)
         {
-            return await ReorderHelper.ReindexAsync(
+            var anchorFound = await ReorderHelper.ReindexAsync(
                 _objectiveRepository,
                 x => x.Id,
                 orderedIds,
                 (entity, index) => entity.SortOrder = index,
                 anchorId: id,
                 applyToAnchor: entity => entity.IsTwentyPercent = isTwentyPercent);
+
+            if (!anchorFound)
+            {
+                _logger.LogWarning("Objective {ObjectiveId} not found as reorder-focus anchor", id);
+            }
+
+            return anchorFound;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -98,10 +123,13 @@ namespace MyTodo.Application.Services
             var objective = await _objectiveRepository.GetByIdAsync(id);
             if (objective == null)
             {
+                _logger.LogWarning("Objective {ObjectiveId} not found for delete", id);
                 return false;
             }
 
             await _objectiveRepository.DeleteAsync(objective);
+
+            _logger.LogInformation("Objective {ObjectiveId} deleted", id);
 
             return true;
         }

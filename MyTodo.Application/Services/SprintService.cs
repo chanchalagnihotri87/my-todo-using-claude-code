@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Interfaces;
@@ -8,10 +9,12 @@ namespace MyTodo.Application.Services
     public class SprintService : ISprintService
     {
         private readonly ISprintRepository _sprintRepository;
+        private readonly ILogger<SprintService> _logger;
 
-        public SprintService(ISprintRepository sprintRepository)
+        public SprintService(ISprintRepository sprintRepository, ILogger<SprintService> logger)
         {
             _sprintRepository = sprintRepository;
+            _logger = logger;
         }
 
         public async Task<List<SprintDto>> GetAllAsync()
@@ -33,6 +36,8 @@ namespace MyTodo.Application.Services
 
             await _sprintRepository.AddAsync(sprint);
 
+            _logger.LogInformation("Sprint {SprintId} created", sprint.Id);
+
             return MapToDto(sprint);
         }
 
@@ -53,6 +58,7 @@ namespace MyTodo.Application.Services
             var sprint = await _sprintRepository.GetByIdAsync(updateSprintDto.Id);
             if (sprint == null)
             {
+                _logger.LogWarning("Sprint {SprintId} not found for update", updateSprintDto.Id);
                 return null;
             }
 
@@ -71,10 +77,13 @@ namespace MyTodo.Application.Services
             var sprint = await _sprintRepository.GetByIdAsync(id);
             if (sprint == null)
             {
+                _logger.LogWarning("Sprint {SprintId} not found for delete", id);
                 return false;
             }
 
             await _sprintRepository.DeleteAsync(sprint);
+
+            _logger.LogInformation("Sprint {SprintId} deleted", id);
 
             return true;
         }

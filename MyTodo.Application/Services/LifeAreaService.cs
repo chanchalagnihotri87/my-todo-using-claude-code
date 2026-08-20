@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Interfaces;
@@ -8,10 +9,12 @@ namespace MyTodo.Application.Services
     public class LifeAreaService : ILifeAreaService
     {
         private readonly ILifeAreaRepository _lifeAreaRepository;
+        private readonly ILogger<LifeAreaService> _logger;
 
-        public LifeAreaService(ILifeAreaRepository lifeAreaRepository)
+        public LifeAreaService(ILifeAreaRepository lifeAreaRepository, ILogger<LifeAreaService> logger)
         {
             _lifeAreaRepository = lifeAreaRepository;
+            _logger = logger;
         }
 
         public async Task<List<LifeAreaDto>> GetAllAsync()
@@ -37,6 +40,8 @@ namespace MyTodo.Application.Services
 
             await _lifeAreaRepository.AddAsync(lifeArea);
 
+            _logger.LogInformation("LifeArea {LifeAreaId} created", lifeArea.Id);
+
             return MapToDto(lifeArea);
         }
 
@@ -45,6 +50,7 @@ namespace MyTodo.Application.Services
             var lifeArea = await _lifeAreaRepository.GetByIdAsync(updateLifeAreaDto.Id);
             if (lifeArea == null)
             {
+                _logger.LogWarning("LifeArea {LifeAreaId} not found for update", updateLifeAreaDto.Id);
                 return null;
             }
 
@@ -62,10 +68,13 @@ namespace MyTodo.Application.Services
             var lifeArea = await _lifeAreaRepository.GetByIdAsync(id);
             if (lifeArea == null)
             {
+                _logger.LogWarning("LifeArea {LifeAreaId} not found for delete", id);
                 return false;
             }
 
             await _lifeAreaRepository.DeleteAsync(lifeArea);
+
+            _logger.LogInformation("LifeArea {LifeAreaId} deleted", id);
 
             return true;
         }

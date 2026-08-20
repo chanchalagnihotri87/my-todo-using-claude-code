@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Common;
@@ -10,10 +11,12 @@ namespace MyTodo.Application.Services
     public class ExperimentService : IExperimentService
     {
         private readonly IExperimentRepository _experimentRepository;
+        private readonly ILogger<ExperimentService> _logger;
 
-        public ExperimentService(IExperimentRepository experimentRepository)
+        public ExperimentService(IExperimentRepository experimentRepository, ILogger<ExperimentService> logger)
         {
             _experimentRepository = experimentRepository;
+            _logger = logger;
         }
 
         public async Task<List<ExperimentDto>> GetBySolutionIdAsync(int solutionId)
@@ -38,6 +41,8 @@ namespace MyTodo.Application.Services
 
             await _experimentRepository.AddAsync(experiment);
 
+            _logger.LogInformation("Experiment {ExperimentId} created for solution {SolutionId}", experiment.Id, experiment.SolutionId);
+
             return MapToDto(experiment);
         }
 
@@ -46,6 +51,7 @@ namespace MyTodo.Application.Services
             var experiment = await _experimentRepository.GetByIdAsync(updateExperimentDto.Id);
             if (experiment == null)
             {
+                _logger.LogWarning("Experiment {ExperimentId} not found for update", updateExperimentDto.Id);
                 return null;
             }
 
@@ -60,7 +66,7 @@ namespace MyTodo.Application.Services
 
         public async Task<bool> ReorderAsync(int id, ExperimentStatus status, List<int> orderedIds)
         {
-            return await ReorderHelper.ReindexAsync(
+            var anchorFound = await ReorderHelper.ReindexAsync(
                 _experimentRepository,
                 x => x.Id,
                 orderedIds,
@@ -71,6 +77,13 @@ namespace MyTodo.Application.Services
                     entity.Status = status;
                     entity.LastUpdatedAt = DateTime.UtcNow;
                 });
+
+            if (!anchorFound)
+            {
+                _logger.LogWarning("Experiment {ExperimentId} not found as reorder anchor", id);
+            }
+
+            return anchorFound;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -78,10 +91,13 @@ namespace MyTodo.Application.Services
             var experiment = await _experimentRepository.GetByIdAsync(id);
             if (experiment == null)
             {
+                _logger.LogWarning("Experiment {ExperimentId} not found for delete", id);
                 return false;
             }
 
             await _experimentRepository.DeleteAsync(experiment);
+
+            _logger.LogInformation("Experiment {ExperimentId} deleted", id);
 
             return true;
         }

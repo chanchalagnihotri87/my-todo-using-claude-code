@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyTodo.Application.DTOs;
 using MyTodo.Application.Repositories.Interfaces;
 using MyTodo.Application.Services.Common;
@@ -10,10 +11,12 @@ namespace MyTodo.Application.Services
     public class TodoService : ITodoService
     {
         private readonly ITodoRepository _todoRepository;
+        private readonly ILogger<TodoService> _logger;
 
-        public TodoService(ITodoRepository todoRepository)
+        public TodoService(ITodoRepository todoRepository, ILogger<TodoService> logger)
         {
             _todoRepository = todoRepository;
+            _logger = logger;
         }
 
         public async Task<TodoDto> AddToTodoAsync(int todoTaskId)
@@ -37,6 +40,8 @@ namespace MyTodo.Application.Services
 
             await _todoRepository.AddAsync(todo);
 
+            _logger.LogInformation("Todo {TodoId} created for task {TodoTaskId}", todo.Id, todoTaskId);
+
             return MapToDto(todo);
         }
 
@@ -45,6 +50,7 @@ namespace MyTodo.Application.Services
             var todo = await _todoRepository.GetByIdAsync(todoId);
             if (todo == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found for date update", todoId);
                 return null;
             }
 
@@ -60,6 +66,7 @@ namespace MyTodo.Application.Services
             var todo = await _todoRepository.GetByIdAsync(todoId);
             if (todo == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found for urgent toggle", todoId);
                 return null;
             }
 
@@ -75,6 +82,7 @@ namespace MyTodo.Application.Services
             var todo = await _todoRepository.GetByIdAsync(todoId);
             if (todo == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found for important toggle", todoId);
                 return null;
             }
 
@@ -90,6 +98,7 @@ namespace MyTodo.Application.Services
             var todo = await _todoRepository.GetByIdAsync(todoId);
             if (todo == null)
             {
+                _logger.LogWarning("Todo {TodoId} not found for frog toggle", todoId);
                 return null;
             }
 
